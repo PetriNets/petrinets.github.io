@@ -4,7 +4,7 @@
 
 ## Producer Consumer Net
 
-!#[](nets/producer-consumer.png)
+![](nets/producer-consumer.png)
 
 > what's the point
 
