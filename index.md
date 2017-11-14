@@ -14,6 +14,12 @@
 
 > what's the point
 
+## Traffic Lights
+
+![](nets/traffic.png)
+
+> about invariants
+
 ## Pawel
 
 > Exponential growth
