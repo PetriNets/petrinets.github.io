@@ -2,26 +2,19 @@
 layout: default 
 title: PetriNet.info 
 ---
-## Pawel
+____
+#### Pawel
+* Exponential growth
 
-> Exponential growth
+#### Confusion
+* Confusion in petri nets
 
-## Confusion
+#### Related Things
+[Event Structures - http://www.cl.cam.ac.uk/~gw104/EvStr.pdf](http://www.cl.cam.ac.uk/~gw104/EvStr.pdf)
 
-> Confusion in petri nets
+[Removing Confusion - https://arxiv.org/pdf/1710.04570.pdf](https://arxiv.org/pdf/1710.04570.pdf)
 
-
-# Related Things
-
-- Event Structures
-  http://www.cl.cam.ac.uk/~gw104/EvStr.pdf
-
-- Removing Confusion
-  https://arxiv.org/pdf/1710.04570.pdf
-
-- Pawel Sobocinski
-  https://www.semanticscholar.org/paper/Representations-of-Petri-Net-Interactions-Sobocinski/5af3fa656639d55afdfde980a74878c1d0a84ba8
-
+[Pawel Sobocinski - https://www.semanticscholar.org/paper/Representations-of-Petri-Net-Interactions-Sobocinski/5af3fa656639d55afdfde980a74878c1d0a84ba8](https://www.semanticscholar.org/paper/Representations-of-Petri-Net-Interactions-Sobocinski/5af3fa656639d55afdfde980a74878c1d0a84ba8)
 
 ----
 
