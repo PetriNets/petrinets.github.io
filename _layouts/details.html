@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<!-- head -->
+{% include head.html %}
+
+<body id="top">
+    <div class="title-cont">
+        <div class="inner">
+            {{ page.main_title }}
+        </div>
+    </div>
+    <div class="content-grid mdl-grid nets-container">
+        <div id="{{page.pnet}}" class="vert-align text-center mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+        </div>
+        <div class="vert-align mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+            <!-- description - lorem ipsum -->
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </div>
+    </div>
+
+    {{ content }}
+
+</body>
+{% include scripts.html %}
+</html>
