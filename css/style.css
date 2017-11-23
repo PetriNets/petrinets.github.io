@@ -1,0 +1,36 @@
+body{
+    font-size: 16px;
+	font-family: monospace;
+	fill: orange;
+}
+h1, h2, h3, h4, h5, h6{
+	font-family: monospace;
+}
+.inner{
+    max-width: 1400px;
+    width: 100%;
+    margin: auto;
+}
+.content-grid{
+    max-width: 1400px;
+}
+.vert-align{
+    display: flex;
+    align-items: center;
+    flex-direction: column;  
+    justify-content: center;
+}
+.text-center{
+    text-align: center;
+}
+.title-cont{
+    padding: 25px;
+    font-size: 1.2em;
+    color: white;
+    background-color: darkblue;
+}
+
+/* pnet containers */
+.pnet1{
+    text-align: center;
+}

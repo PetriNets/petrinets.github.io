@@ -1,25 +1,7 @@
-> Welcome to Petrinet.Info
-
-# Example Nets
-
-## Producer Consumer Net
-
-![](nets/producer-consumer.png)
-
-> what's the point
-
-## Split-Join
-
-![](nets/split-join.png)
-
-> what's the point
-
-## Traffic Lights
-
-![](nets/traffic.png)
-
-> about invariants
-
+---
+layout: default 
+title: PetriNet.info 
+---
 ## Pawel
 
 > Exponential growth
