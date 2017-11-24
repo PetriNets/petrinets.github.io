@@ -1,10 +1,10 @@
 ---
 layout: details 
-title: Traffic Lights 
+title: Pawel's Net 
 ---
 
-### Traffic Light Net
-Some stuff about this amazing net
+### Pawel's Net
+Some stuff about the net yo!
 
 <script>
     document.write("<div id=\"pnet3\"></div>");
@@ -20,10 +20,7 @@ Some stuff about this amazing net
         {
             label: 'x', y: 20, x: 30,
             pre: { a: 1 },
-            post: {
-                queue: 1,
-                b: 1
-            }
+            post: { queue: 1, b: 1 }
         },
         {
             label: 'y', y: 40, x: 30,
@@ -55,5 +52,5 @@ Some stuff about this amazing net
     drawNet('#pnet3', states_pnet3, transitions_pnet3, marking_pnet3);
 </script>
 
-Some stuff about the net
-[edit](https://github.com/PetriNets/petrinets.github.io/edit/master/traffic-lights.md)
+More stuff about the net
+[edit](https://github.com/PetriNets/petrinets.github.io/edit/master/split-join.md)

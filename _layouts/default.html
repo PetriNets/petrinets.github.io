@@ -1,72 +1,74 @@
 <!doctype html>
 <html>
 <!-- head -->
-{% include head.html %}
+{% include head.html %} {% include scripts.html %}
 
 <body id="top">
-
-    <h3 class="text-center">Welcome to PetriNet.Info</h3>
-
-    <h4 class="text-center">Example Nets</h4>
-    
-    <!-- producer - consumer pnet -->
-    <div class="title-cont">
-        <a href="/producer-consumer.html">
-            <div class="inner">
-                Producer - Consumer
+    {% include top-nav.html %}
+            <!-- Your content goes here -->
+            <h3 class="text-center">Welcome to PetriNet.Info</h3>
+            <br>
+    <main class="mdl-layout__content">
+        <div class="page-content">
+            <!-- producer - consumer pnet -->
+            <div class="title-cont">
+                <a href="/producer-consumer.html">
+                    <div class="inner">
+                        Producer - Consumer
+                    </div>
+                </a>
             </div>
-        </a>
-    </div>
-    <div class="content-grid mdl-grid nets-container">
-        <div id="pnet1" class="vert-align text-center mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
-        </div>
-        <div class="vert-align mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
-            <!-- description - lorem ipsum -->
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </div>
-    </div>
-
-    <!-- split-join pnet -->
-    <div class="title-cont">
-        <a href="/split-join.html">
-            <div class="inner">
-            Split - Join 
+            <div class="content-grid mdl-grid nets-container">
+                <div id="pnet1" class="vert-align text-center mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+                </div>
+                <div class="vert-align mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+                    <!-- description - lorem ipsum -->
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </div>
             </div>
-        </a>
-    </div>
-    <div class="content-grid mdl-grid nets-container">
-        <div id="pnet2" class="vert-align text-center mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
-        </div>
-        <div class="vert-align mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
-            <!-- description - lorem ipsum -->
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </div>
-    </div>
 
-    <!-- traffic lights pnet -->
-    <div class="title-cont">
-        <a href="/traffic-lights.html">
-            <div class="inner">
-            Traffic Lights 
+            <!-- split-join pnet -->
+            <div class="title-cont">
+                <a href="/split-join.html">
+                    <div class="inner">
+                        Split - Join
+                    </div>
+                </a>
             </div>
-        </a>
-    </div>
-    <div class="content-grid mdl-grid nets-container">
-        <div id="pnet3" class="vert-align text-center mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
-        </div>
-        <div class="vert-align mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
-            <!-- description - lorem ipsum -->
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </div>
-    </div>
+            <div class="content-grid mdl-grid nets-container">
+                <div id="pnet2" class="vert-align text-center mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+                </div>
+                <div class="vert-align mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+                    <!-- description - lorem ipsum -->
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </div>
+            </div>
 
-    <div style="padding: 40px">
-        {{ content }}
-    </div>
+            <!-- traffic lights pnet -->
+            <div class="title-cont">
+                <a href="/traffic-lights.html">
+                    <div class="inner">
+                        Traffic Lights
+                    </div>
+                </a>
+            </div>
+            <div class="content-grid mdl-grid nets-container">
+                <div id="pnet3" class="vert-align text-center mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+                </div>
+                <div class="vert-align mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+                    <!-- description - lorem ipsum -->
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </div>
+            </div>
 
+            <div style="padding: 40px">
+                {{ content }}
+            </div>
+        </div>
+    </main>
 </body>
-{% include scripts.html %}
+
 </html>

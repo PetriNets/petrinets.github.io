@@ -1,10 +1,18 @@
 body{
     font-size: 16px;
 	font-family: monospace;
-	fill: orange;
+    fill: orange;
+    margin-top: 24px;
 }
 h1, h2, h3, h4, h5, h6{
 	font-family: monospace;
+}
+.mdl-layout__content{
+    width: 100%;
+}
+#top-nav{
+    position: fixed;
+    margin-top: -24px;
 }
 .inner{
     max-width: 1400px;
@@ -24,10 +32,13 @@ h1, h2, h3, h4, h5, h6{
     text-align: center;
 }
 .title-cont{
-    padding: 25px;
+    padding: 18px;
     font-size: 1.2em;
     color: white;
-    background-color: darkblue;
+    border-top: 1px solid gainsboro;
+}
+.title-link{
+    padding-left: 0 !important;
 }
 
 /* pnet containers */
