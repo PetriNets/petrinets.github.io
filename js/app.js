@@ -236,3 +236,17 @@ function drawNet(container, states, transitions, marking) {
 
   redraw();
 }
+
+function insertNet(states, transitions, marking, scale) {
+  const id = 'ptnet-' + Math.floor(Math.random() * 100000000).toString()
+  document.write(`<div id="${id}"></div>`)
+  scaleModel(transitions, states, scale, scale)
+  drawNet(`#${id}`, states, transitions, marking)
+}
+
+function scaleModel(transitions, states, sx, sy) {
+  states.concat(transitions).forEach(function(s) {
+    s.x *= sx;
+    s.y *= sy;
+  });
+}

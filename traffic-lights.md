@@ -7,7 +7,6 @@ title: Traffic Lights
 Some stuff about this amazing net
 
 <script>
-    document.write("<div id=\"pnet3\"></div>");
     // pnet 3
     var states_pnet3 = [
         { label: 'a', y: 30, x: 10 },
@@ -44,15 +43,8 @@ Some stuff about this amazing net
     var marking_pnet3 = { a: 1, d: 1 };
     //end pnet3
 
-    // scaling
-    function scaleModel(transitions, states, sx, sy) {
-        (states.concat(transitions)).forEach(function(s){s.x *= sx; s.y *= sy})	
-    }
-
-    scaleModel(transitions_pnet3, states_pnet3, 4, 4);
-
     // drawing stuffs
-    drawNet('#pnet3', states_pnet3, transitions_pnet3, marking_pnet3);
+    insertNet(states_pnet3, transitions_pnet3, marking_pnet3, 4);
 </script>
 
 Some stuff about the net

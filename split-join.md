@@ -7,7 +7,6 @@ title: Split - Join
 Some stuff about the net yo!
 
 <script>
-    document.write("<div id=\"pnet2\"></div>");
     // pnet2
     var states_pnet2 = [
         {label:'a', y:60, x:20},
@@ -19,7 +18,6 @@ Some stuff about the net yo!
     ]
 
     var transitions_pnet2 = [
-
         {label: 'x', y: 60, x: 60,
             pre: {a: 1},
             post: {
@@ -27,17 +25,14 @@ Some stuff about the net yo!
                 b1: 1
             }
         },
-
         {label: 'z0', y: 30, x: 140,
             pre: {b0: 1},
             post: {d0: 1}
         },
-
         {label: 'z1', y: 90, x: 140,
             pre: {b1: 1},
             post: {d1: 1}
         },
-
         {label: 'y', y: 60, x: 220,
             pre: {
                 d0: 1,
@@ -49,8 +44,8 @@ Some stuff about the net yo!
     var marking_pnet2 = {a: 1};
     // pnet 2
 
-    // drawing stuffs
-    drawNet('#pnet2', states_pnet2, transitions_pnet2, marking_pnet2);
+    // insert net 
+    insertNet(states_pnet2, transitions_pnet2, marking_pnet2, 1);
 </script>
 
 More stuff about the net

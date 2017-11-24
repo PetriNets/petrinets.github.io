@@ -7,7 +7,6 @@ title: Producer - Consumer
 This iis the prodfaksjhfakjssdf
 
 <script>
-    document.write("<div id=\"pnet1\"></div>");
     // pnet1
     var states_pnet1 = [
         {label:'a', y:10, x:20},
@@ -18,7 +17,6 @@ This iis the prodfaksjhfakjssdf
     ]
 
     var transitions_pnet1 = [
-
         {label: 'x', y: 20, x: 30,
             pre: {a: 1},
             post: {
@@ -26,17 +24,14 @@ This iis the prodfaksjhfakjssdf
                 b: 1
             }
         },
-
         {label: 'y', y: 20, x: 10,
             pre: {b: 1},
             post: {a: 1}
         },
-
         {label: 'w', y: 20, x: 70,
             pre: {queue: 1, d: 1},
             post: {c: 1}
         },
-
         {label: 'z', y: 20, x: 90,
             pre: {c: 1},
             post: {d: 1}}
@@ -45,15 +40,8 @@ This iis the prodfaksjhfakjssdf
     var marking_pnet1 = {a: 1, d: 1};
     // end pnet1    
 
-    // scaling
-    function scaleModel(transitions, states, sx, sy) {
-        (states.concat(transitions)).forEach(function(s){s.x *= sx; s.y *= sy})	
-    }
-
-    scaleModel(transitions_pnet1, states_pnet1, 4, 4);
-
-    // drawing stuffs
-    drawNet('#pnet1', states_pnet1, transitions_pnet1, marking_pnet1);
+    // insert net 
+    insertNet(states_pnet1, transitions_pnet1, marking_pnet1, 4);
 </script>
 
 this is an importatnt net becaus ahhahaha
