@@ -19,10 +19,7 @@ Some stuff about this amazing net
         {
             label: 'x', y: 20, x: 30,
             pre: { a: 1 },
-            post: {
-                queue: 1,
-                b: 1
-            }
+            post: { queue: 1, b: 1 }
         },
         {
             label: 'y', y: 40, x: 30,
@@ -48,4 +45,5 @@ Some stuff about this amazing net
 </script>
 
 Some stuff about the net
+
 [edit](https://github.com/PetriNets/petrinets.github.io/edit/master/traffic-lights.md)

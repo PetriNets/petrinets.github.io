@@ -19,10 +19,7 @@ This iis the prodfaksjhfakjssdf
     var transitions_pnet1 = [
         {label: 'x', y: 20, x: 30,
             pre: {a: 1},
-            post: {
-                queue: 1,
-                b: 1
-            }
+            post: { queue: 1, b: 1 }
         },
         {label: 'y', y: 20, x: 10,
             pre: {b: 1},

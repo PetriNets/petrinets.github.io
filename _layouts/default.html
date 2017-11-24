@@ -1,15 +1,19 @@
 <!doctype html>
 <html>
 <!-- head -->
-{% include head.html %} {% include scripts.html %}
-
+{% include head.html %} 
+<!-- scripts -->
+{% include scripts.html %}
 <body id="top">
+
+    <div id="top-nav" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <!-- nav -->
     {% include top-nav.html %}
-            <!-- Your content goes here -->
-            <h3 class="text-center">Welcome to PetriNet.Info</h3>
-            <br>
     <main class="mdl-layout__content">
         <div class="page-content">
+            <!-- Your content goes here -->
+            <h3 class="text-center">Welcome to PetriNet.info</h3>
+            <br>
             <!-- producer - consumer pnet -->
             <div class="title-cont">
                 <a href="/producer-consumer.html">
@@ -69,6 +73,7 @@
             </div>
         </div>
     </main>
+    </div>
 </body>
 
 </html>

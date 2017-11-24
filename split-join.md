@@ -20,10 +20,7 @@ Some stuff about the net yo!
     var transitions_pnet2 = [
         {label: 'x', y: 60, x: 60,
             pre: {a: 1},
-            post: {
-                b0: 1,
-                b1: 1
-            }
+            post: { b0: 1, b1: 1 }
         },
         {label: 'z0', y: 30, x: 140,
             pre: {b0: 1},
@@ -34,10 +31,7 @@ Some stuff about the net yo!
             post: {d1: 1}
         },
         {label: 'y', y: 60, x: 220,
-            pre: {
-                d0: 1,
-                d1: 1
-            },
+            pre: { d0: 1, d1: 1 },
             post: {c: 1}}
     ];
 
@@ -49,4 +43,5 @@ Some stuff about the net yo!
 </script>
 
 More stuff about the net
+
 [edit](https://github.com/PetriNets/petrinets.github.io/edit/master/split-join.md)

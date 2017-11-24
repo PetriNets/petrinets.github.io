@@ -8,7 +8,8 @@ h1, h2, h3, h4, h5, h6{
 	font-family: monospace;
 }
 .mdl-layout__content{
-    width: 100%;
+    /* width: 100%; */
+    /* z-index: -1; */
 }
 #top-nav{
     position: fixed;

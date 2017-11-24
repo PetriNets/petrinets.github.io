@@ -34,25 +34,18 @@ ____
     ]
 
     var transitions_pnet1 = [
-
         {label: 'x', y: 20, x: 30,
             pre: {a: 1},
-            post: {
-                queue: 1,
-                b: 1
-            }
+            post: { queue: 1, b: 1 }
         },
-
         {label: 'y', y: 20, x: 10,
             pre: {b: 1},
             post: {a: 1}
         },
-
         {label: 'w', y: 20, x: 70,
             pre: {queue: 1, d: 1},
             post: {c: 1}
         },
-
         {label: 'z', y: 20, x: 90,
             pre: {c: 1},
             post: {d: 1}}
@@ -72,30 +65,20 @@ ____
     ]
 
     var transitions_pnet2 = [
-
         {label: 'x', y: 60, x: 60,
             pre: {a: 1},
-            post: {
-                b0: 1,
-                b1: 1
-            }
+            post: { b0: 1, b1: 1 }
         },
-
         {label: 'z0', y: 30, x: 140,
             pre: {b0: 1},
             post: {d0: 1}
         },
-
         {label: 'z1', y: 90, x: 140,
             pre: {b1: 1},
             post: {d1: 1}
         },
-
         {label: 'y', y: 60, x: 220,
-            pre: {
-                d0: 1,
-                d1: 1
-            },
+            pre: { d0: 1, d1: 1 },
             post: {c: 1}}
     ];
 
@@ -114,10 +97,7 @@ ____
         {
             label: 'x', y: 20, x: 30,
             pre: { a: 1 },
-            post: {
-                queue: 1,
-                b: 1
-            }
+            post: { queue: 1, b: 1 }
         },
         {
             label: 'y', y: 40, x: 30,
@@ -135,13 +115,9 @@ ____
             post: { d: 1, queue: 1 }
         }
     ];
+
     var marking_pnet3 = { a: 1, d: 1 };
     //end pnet3
-
-    // scaling
-    function scaleModel(transitions, states, sx, sy) {
-        (states.concat(transitions)).forEach(function(s){s.x *= sx; s.y *= sy})	
-    }
 
     scaleModel(transitions_pnet1, states_pnet1, 4, 4);
     scaleModel(transitions_pnet3, states_pnet3, 4, 4);
