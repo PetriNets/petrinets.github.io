@@ -1,0 +1,18 @@
+svg {
+	width: 400px;
+	height: 200px;
+}
+svg text {
+	fill: black;
+}
+svg *::selection {
+	background: transparent;
+}
+
+svg *::-moz-selection {
+    background: transparent;
+}
+
+svg *::-webkit-selection {
+	background: transparent;
+}
