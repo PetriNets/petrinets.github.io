@@ -42,5 +42,3 @@ This iis the prodfaksjhfakjssdf
 </script>
 
 this is an importatnt net becaus ahhahaha
-
-[edit](https://github.com/PetriNets/petrinets.github.io/edit/master/producer-consumer.md)
