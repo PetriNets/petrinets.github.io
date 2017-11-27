@@ -43,5 +43,3 @@ Some stuff about the net yo!
 </script>
 
 More stuff about the net
-
-[edit](https://github.com/PetriNets/petrinets.github.io/edit/master/split-join.md)

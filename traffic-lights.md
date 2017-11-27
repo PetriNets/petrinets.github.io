@@ -45,5 +45,3 @@ Some stuff about this amazing net
 </script>
 
 Some stuff about the net
-
-[edit](https://github.com/PetriNets/petrinets.github.io/edit/master/traffic-lights.md)
