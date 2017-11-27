@@ -2,7 +2,7 @@
 layout: default 
 title: Home
 ---
-____
+
 #### Pawel
 * Exponential growth
 
