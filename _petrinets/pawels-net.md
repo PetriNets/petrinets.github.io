@@ -42,4 +42,6 @@ This is the net description
 
 ### Pawel's Net
 
+* write stuff about the net
+
 <script>addNetByName('default')</script>

@@ -2,7 +2,7 @@ function drawNet(container, states, transitions, marking) {
   var r = 10;
   var w = 10;
   var h = 10;
-
+  
   function isEnabled(pre) {
     return _(pre).all(function(multiplicity, place) {
       return (marking[place] || 0) >= multiplicity;
@@ -62,11 +62,35 @@ function drawNet(container, states, transitions, marking) {
     }, []);
   }
 
+  const MAX = Number.MAX_VALUE
+  const MIN = Number.MIN_VALUE
+
+  // bounds[min_x, max_x, min_y, max_y)
+  var boundary = [MAX, MIN, MAX, MIN]
+  function updateBoundary(x, y) {
+    boundary[0] = Math.min(boundary[0], x)
+    boundary[1] = Math.max(boundary[1], x)
+    boundary[2] = Math.min(boundary[2], y)
+    boundary[3] = Math.max(boundary[3], y)
+  }
+
+  _.forEach(states, function(el){
+    updateBoundary(el.x, el.y)
+  })
+  _.forEach(transitions, function(el){
+    updateBoundary(el.x, el.y)
+  })
+
+  // account for diameter of places and transitions
+  // add padding
+  var width  = Math.abs(boundary[1] - boundary[0]) 
+  var height = Math.abs(boundary[3] - boundary[2]) 
+
   var svg = d3
     .select(container)
     .append("svg")
-    .attr("width", "500px")
-    .attr("height", "250px");
+    .attr("width", `${width}px`)
+    .attr("height", `${height}px`);
 
   // define arrow markers for graph links
   svg
