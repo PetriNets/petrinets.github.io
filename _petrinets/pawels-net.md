@@ -33,7 +33,7 @@ nets:
           pre:  { c: 1, a: 1 },
           post: { d: 1, b: 1 }
         }
-    marking: {}
+    marking: {a: 1, d: 1, e: 1, f: 1}
     scale: 1
 
 ---
@@ -41,7 +41,5 @@ nets:
 This is the net description
 
 ### Pawel's Net
-
-* write stuff about the net
 
 <script>addNetByName('default')</script>
