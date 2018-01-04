@@ -1,7 +1,6 @@
-/*svg {
-	width: 400px;
-	height: 200px;
-}*/
+svg{
+	padding: 40px;
+}
 svg text {
 	fill: black;
 }

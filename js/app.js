@@ -1,8 +1,8 @@
-function drawNet(container, states, transitions, marking) {
+function drawNet_(container, states, transitions, marking, width, height) {
   var r = 10;
   var w = 10;
   var h = 10;
-
+  
   function isEnabled(pre) {
     return _(pre).all(function(multiplicity, place) {
       return (marking[place] || 0) >= multiplicity;
@@ -65,8 +65,8 @@ function drawNet(container, states, transitions, marking) {
   var svg = d3
     .select(container)
     .append("svg")
-    .attr("width", "500px")
-    .attr("height", "250px");
+    .attr("width", `${width}px`)
+    .attr("height", `${height}px`);
 
   // define arrow markers for graph links
   svg
@@ -237,6 +237,7 @@ function drawNet(container, states, transitions, marking) {
   redraw();
 }
 
+// make div with unique id to draw the net inside of
 function insertNet(states, transitions, marking, scale) {
   const id = 'ptnet-' + Math.floor(Math.random() * 100000000).toString()
   document.write(`<div id="${id}"></div>`)
@@ -244,9 +245,64 @@ function insertNet(states, transitions, marking, scale) {
   drawNet(`#${id}`, states, transitions, marking)
 }
 
+// scale the petrinet
 function scaleModel(transitions, states, sx, sy) {
   states.concat(transitions).forEach(function(s) {
     s.x *= sx;
     s.y *= sy;
   });
+}
+
+// compute the boundary and then translate states and transitions
+function drawNet(container, states, transitions, marking){
+  const MAX = Number.MAX_VALUE
+  const MIN = Number.MIN_VALUE
+
+  // bounds[min_x, max_x, min_y, max_y)
+  var boundary = [MAX, MIN, MAX, MIN]
+  function updateBoundary(x, y) {
+    boundary[0] = Math.min(boundary[0], x)
+    boundary[1] = Math.max(boundary[1], x)
+    boundary[2] = Math.min(boundary[2], y)
+    boundary[3] = Math.max(boundary[3], y)
+  }
+
+  _.forEach(states, function(el){
+    updateBoundary(el.x, el.y)
+  })
+  _.forEach(transitions, function(el){
+    updateBoundary(el.x, el.y)
+  })
+
+  // account for diameter of places and transitions
+  // add padding
+  var width  = Math.abs(boundary[1] - boundary[0]) 
+  var height = Math.abs(boundary[3] - boundary[2]) 
+
+  // find top left corner vector and subtract it from all points
+  var v = { x: boundary[0], y: boundary[2] }
+ 
+  // translate all points to accommodate padding and radius (radius is 10 so add 20 to have 10px of padding) 
+  radiusShift = 20
+  
+  var translatedStates = _.forEach(states, function(el){
+    el.x = el.x - v.x + radiusShift 
+    el.y = el.y - v.y + radiusShift 
+  }) 
+  var translatedTransitions = _.forEach(transitions, function(el){
+    el.x = el.x - v.x + radiusShift 
+    el.y = el.y - v.y + radiusShift
+  }) 
+  var translatedMarking = _.forEach(marking, function(el){
+    el.x = el.x - v.x + radiusShift 
+    el.y = el.y - v.y + radiusShift 
+  }) 
+
+  // compute height
+  var padding = 40
+  var computedHeight = height + padding 
+  var computedWidth = width + padding 
+
+  // call main draw net function
+  drawNet_(container, translatedStates, translatedTransitions, translatedMarking, computedWidth, computedHeight)
 }
