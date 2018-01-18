@@ -15,7 +15,7 @@
                 <br>
                 {% for petrinet in site.petrinets %}
                     <div class="title-cont">
-                        <a href="/{{ petrinet.url }}">
+                        <a href="{{site.url}}{{ petrinet.url }}">
                             <div class="inner">
                                 {{ petrinet.title }} 
                             </div>
