@@ -1,15 +1,9 @@
 ---
-layout: default 
+layout: default
 title: Home
 ---
 
-#### Pawel
-* Exponential growth
-
-#### Confusion
-* Confusion in petri nets
-
-#### Related Things
+#### Related resources 
 [Event Structures - http://www.cl.cam.ac.uk/~gw104/EvStr.pdf](http://www.cl.cam.ac.uk/~gw104/EvStr.pdf)
 
 [Removing Confusion - https://arxiv.org/pdf/1710.04570.pdf](https://arxiv.org/pdf/1710.04570.pdf)
