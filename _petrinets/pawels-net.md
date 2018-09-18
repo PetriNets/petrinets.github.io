@@ -1,17 +1,17 @@
 ---
-layout: details 
-title: Pawel's Net 
+layout: details
+title: Pawel's Net
 nets:
   default:
     states:
-      - { label: "a", x: 10, y: 20} 
-      - { label: "b", x: 10, y: 140 } 
-      - { label: "c", x: 115,  y: 140 } 
+      - { label: "a", x: 10, y: 20}
+      - { label: "b", x: 10, y: 140 }
+      - { label: "c", x: 115,  y: 140 }
       - { label: "d", x: 115,  y: 20 }
       - { label: "e", x: 210,   y: 20 }
       - { label: "f", x: 315,  y: 20 }
-      - { label: "g", x: 210,   y: 140 } 
-      - { label: "h", x: 315,  y: 140 } 
+      - { label: "g", x: 210,   y: 140 }
+      - { label: "h", x: 315,  y: 140 }
     transitions:
       - { label: "x", x: -40, y: 80,
           post: { a: 1 } ,
@@ -37,8 +37,7 @@ nets:
     scale: 1
 
 ---
-<!-- first paragraph is the net description -->
-This is the net description
+The study of reachability in Petri nets is expansive and a very important thing to consider to fully understand their computational properties. This net is an example of how in some cases, certain computations scale exponentially as new places are added. In this particular net, for each added bit, the path from the tokens going from the top row of places to the bottom, doubles. You can learn more about it in [Pawel Sobocinski's video](https://www.youtube.com/watch?v=77KwKNSb7uc), which explains open Petri nets. 
 
 ### Pawel's Net
 

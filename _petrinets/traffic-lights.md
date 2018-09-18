@@ -1,9 +1,9 @@
 ---
-layout: details 
-title: Traffic Lights 
+layout: details
+title: Traffic Lights
 nets:
   default:
-    states: 
+    states:
       - { label: 'a',     y: 30, x: 10 }
       - { label: 'b',     y: 30, x: 30 }
       - { label: 'c',     y: 30, x: 90 }
@@ -29,8 +29,7 @@ nets:
     marking: { a: 1, d: 1 }
     scale: 4
 ---
-<!-- first paragraph is the net description -->
-This is the net description
+If one imagines that the place on the far left and the place on the far right represent green light, then we, at the least, want to ensure that they are never on at the same time. This net represents such a protocol - a construct in which the undesired state is not possible.     
 
 ### Traffic Light Net
 

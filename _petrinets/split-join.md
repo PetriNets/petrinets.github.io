@@ -1,9 +1,9 @@
 ---
-layout: details 
+layout: details
 title: Split - Join
 nets:
   default:
-    states: 
+    states:
       - { label: 'a',  y: 60, x: 20}
       - { label: 'b0', y: 30, x: 100}
       - { label: 'b1', y: 90, x: 100}
@@ -31,8 +31,7 @@ nets:
     scale: 1
 
 ---
-<!-- first paragraph is the net description -->
-This is the net description
+Expressing events happening in parallel is often necessary. This net shows how a single, sequential process can be split into two branches which run in parallel and then sync. The concept of [parallel computing](https://en.wikipedia.org/wiki/Parallel_computing) is an important one. 
 
 ### Split-Join Net
 
