@@ -1,0 +1,51 @@
+html{
+    overflow-y: hidden;
+}
+body{
+    font-size: 16px;
+	font-family: monospace;
+    fill: orange;
+    margin-top: 24px;
+}
+h1, h2, h3, h4, h5, h6{
+	font-family: monospace;
+}
+.mdl-layout__content{
+    /* width: 100%; */
+    /* z-index: -1; */
+}
+#top-nav{
+    position: fixed;
+    margin-top: -24px;
+}
+.inner{
+    max-width: 1400px;
+    width: 100%;
+    margin: auto;
+}
+.content-grid{
+    max-width: 1400px;
+}
+.vert-align{
+    display: flex;
+    align-items: center;
+    flex-direction: column;  
+    justify-content: center;
+}
+.text-center{
+    text-align: center;
+}
+.title-cont{
+    padding: 18px;
+    font-size: 1.2em;
+    color: white;
+    border-top: 1px solid gainsboro;
+}
+.title-link{
+    padding-left: 0 !important;
+}
+
+/* pnet containers */
+.pnet1{
+    text-align: center;
+}

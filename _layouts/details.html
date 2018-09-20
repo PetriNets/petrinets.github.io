@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+{% include head.html %} 
+{% include scripts.html %}
+<body id="top">
+    <div id="top-nav" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <!-- nav -->
+        {% include top-nav.html %}
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <div class="content-grid mdl-grid nets-container">
+                    <div class="mdl-cell mdl-cell--12-col">
+                        {{ content }}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <a href="{{site.github.repository_url}}/edit/master/{{page.path}}">Edit this page</a>
+</body>
+
+</html>
