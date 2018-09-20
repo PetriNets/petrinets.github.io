@@ -1,5 +1,3 @@
-> Welcome to Petrinet.Info
-
 # Example Nets
 
 ## Producer Consumer Net
