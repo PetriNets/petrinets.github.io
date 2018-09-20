@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <!-- head -->
-{% include head.html %} 
+{% include head.html %}
 <!-- scripts -->
 {% include scripts.html %}
 <body id="top">
@@ -11,13 +11,12 @@
         {% include top-nav.html %}
         <main class="mdl-layout__content">
             <div class="page-content">
-                <h3 class="text-center">Welcome to PetriNet.info</h3>
                 <br>
                 {% for petrinet in site.petrinets %}
                     <div class="title-cont">
                         <a href="{{site.url}}{{ petrinet.url }}">
                             <div class="inner">
-                                {{ petrinet.title }} 
+                                {{ petrinet.title }}
                             </div>
                         </a>
                     </div>
@@ -27,7 +26,7 @@
                             <script>
                                 var net = {{ petrinet.nets.default | jsonify }}
                                 insertNet(net.states, net.transitions, net.marking, net.scale)
-                            </script> 
+                            </script>
                         </div>
                         <div class="vert-align mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
                             {{ petrinet.excerpt }}
