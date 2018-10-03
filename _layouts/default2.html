@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<!-- head -->
+{% include head.html %}
+<!-- scripts -->
+{% include scripts.html %}
+<body id="top">
+
+    <div id="top-nav" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <!-- nav -->
+        {% include top-nav.html %}
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <br>
+                {% for petrinet in site.petrinets %}
+                    <div class="title-cont">
+                        <a href="{{site.url}}{{ petrinet.url }}">
+                            <div class="inner">
+                                {{ petrinet.title }}
+                            </div>
+                        </a>
+                    </div>
+                    <div class="content-grid mdl-grid nets-container">
+                        <div class="vert-align text-center mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+                            <!-- insert net here -->
+                            <script>
+                                var net = {{ petrinet.nets.default | jsonify }}
+                                insertNet(net.states, net.transitions, net.marking, net.scale)
+                            </script>
+                        </div>
+                        <div class="vert-align mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+                            {{ petrinet.excerpt }}
+                            <!-- net description -->
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div style="padding: 40px">
+                    {{ content }}
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
