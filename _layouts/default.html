@@ -4,14 +4,14 @@
 {% include head.html %}
 <!-- scripts -->
 {% include scripts.html %}
+{% include pnet-viewer.html %}
 <body id="top">
 
-    <div id="top-nav" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <div id="top-nav" class="mdl-layout">
         <!-- nav -->
         {% include top-nav.html %}
         <main class="mdl-layout__content">
             <div class="page-content">
-                <br>
                 {% for petrinet in site.petrinets %}
                     <div class="title-cont">
                         <a href="{{site.url}}{{ petrinet.url }}">
@@ -23,9 +23,12 @@
                     <div class="content-grid mdl-grid nets-container">
                         <div class="vert-align text-center mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
                             <!-- insert net here -->
+                            <petrinet-viewer id="{{petrinet.title}}"></petrinet-viewer>
                             <script>
-                                var net = {{ petrinet.nets.default | jsonify }}
-                                insertNet(net.states, net.transitions, net.marking, net.scale)
+                            var netInfo = {{ petrinet.net | jsonify}}
+                            console.log(netInfo)
+                            var title = "{{petrinet.title}}"
+                              renderNet(title, netInfo)
                             </script>
                         </div>
                         <div class="vert-align mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
@@ -37,6 +40,7 @@
 
                 <div style="padding: 40px">
                     {{ content }}
+
                 </div>
             </div>
         </main>
