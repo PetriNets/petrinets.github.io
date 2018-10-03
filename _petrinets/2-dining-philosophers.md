@@ -1,0 +1,6 @@
+---
+layout: details
+net: {"title":"Dining Philosophers no lock","net":{"places":[{"label":"P0","x":8,"y":6},{"label":"P1","x":8,"y":16},{"label":"P2","x":27,"y":2},{"label":"P3","x":27,"y":21}],"transitions":[{"label":"T0","x":22.55,"y":6,"pre":{"P0":1,"P1":1},"post":{"P2":1}},{"label":"T1","x":22.55,"y":16,"pre":{"P0":1,"P1":1},"post":{"P3":1}},{"label":"T2","x":2.55,"y":21,"pre":{"P3":1},"post":{"P1":1,"P0":1}},{"label":"T3","x":2.55,"y":2,"pre":{"P2":1},"post":{"P0":1,"P1":1}}],"marking":{"P0":1,"P1":1}}}
+
+---
+[Wikipedia](https://en.wikipedia.org/wiki/Dining_philosophers_problem): "In computer science, the dining philosophers problem is an example problem often used in concurrent algorithm design to illustrate synchronization issues and techniques for resolving them. Each philosopher must alternately think and eat. However, a philosopher can only eat spaghetti when they have both left and right forks. Each fork can be held by only one philosopher and so a philosopher can use the fork only if it is not being used by another philosopher. After an individual philosopher finishes eating, they need to put down both forks so that the forks become available to others. A philosopher can take the fork on their right or the one on their left as they become available, but cannot start eating before getting both forks."
