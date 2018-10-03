@@ -26,7 +26,6 @@
                             <petrinet-viewer id="{{petrinet.title}}"></petrinet-viewer>
                             <script>
                             var netInfo = {{ petrinet.net | jsonify}}
-                            console.log(netInfo)
                             var title = "{{petrinet.title}}"
                               renderNet(title, netInfo)
                             </script>
