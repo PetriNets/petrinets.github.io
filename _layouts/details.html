@@ -1,15 +1,23 @@
 <!doctype html>
 <html>
-{% include head.html %} 
+{% include head.html %}
 {% include scripts.html %}
+{% include pnet-viewer.html %}
 <body id="top">
-    <div id="top-nav" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <div id="top-nav" class="mdl-layout mdl-layout--fixed-header">
         <!-- nav -->
         {% include top-nav.html %}
         <main class="mdl-layout__content">
             <div class="page-content">
                 <div class="content-grid mdl-grid nets-container">
                     <div class="mdl-cell mdl-cell--12-col">
+                      <h3>{{page.title}}</h3>
+                            <petrinet-viewer id="{{page.title}}"></petrinet-viewer>
+                            <script>
+                            var netInfo = {{ page.net | jsonify}}
+                            var title = "{{page.title}}"
+                              renderNet(title, netInfo)
+                            </script>
                         {{ content }}
                     </div>
                 </div>

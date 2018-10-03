@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: details 
 net: {"title":"Dining Philosophers no lock","net":{"places":[{"label":"P0","x":8,"y":6},{"label":"P1","x":8,"y":16},{"label":"P2","x":27,"y":2},{"label":"P3","x":27,"y":21}],"transitions":[{"label":"T0","x":22.55,"y":6,"pre":{"P0":1,"P1":1},"post":{"P2":1}},{"label":"T1","x":22.55,"y":16,"pre":{"P0":1,"P1":1},"post":{"P3":1}},{"label":"T2","x":2.55,"y":21,"pre":{"P3":1},"post":{"P1":1,"P0":1}},{"label":"T3","x":2.55,"y":2,"pre":{"P2":1},"post":{"P0":1,"P1":1}}],"marking":{"P0":1,"P1":1}}}
 
 ---
