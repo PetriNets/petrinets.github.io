@@ -4,7 +4,6 @@ html{
 body{
     font-size: 16px;
 	font-family: monospace;
-    fill: orange;
     margin-top: 24px;
 }
 h1, h2, h3, h4, h5, h6{
@@ -29,7 +28,7 @@ h1, h2, h3, h4, h5, h6{
 .vert-align{
     display: flex;
     align-items: center;
-    flex-direction: column;  
+    flex-direction: column;
     justify-content: center;
 }
 .text-center{

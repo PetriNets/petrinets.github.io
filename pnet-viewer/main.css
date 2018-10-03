@@ -1,0 +1,98 @@
+/*===============================
+  Base Units
+  ===============================*/
+/*===============================
+  Normalizing Base styles
+  ===============================*/
+html {
+  width: 100%;
+  min-width: 1024px;
+  height: 100%;
+  color: #333;
+  background-color: #fefefe; }
+  html body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    margin: 0; }
+
+* {
+  box-sizing: border-box; }
+
+ul {
+  padding: 0;
+  list-style: none; }
+
+a {
+  cursor: pointer;
+  text-decoration: none; }
+
+/*===============================
+  Globally scoped styles
+  ===============================*/
+.blur {
+  -webkit-filter: blur(10px);
+  filter: blur(10px); }
+
+svg#defs {
+  display: none; }
+
+/*===============================
+Petri Nets
+===============================*/
+.petrinet-container svg {
+  margin: auto;
+  width: 100%; }
+
+.petrinet-transition-blobs path {
+  stroke-width: 0;
+  transition: stroke-width 0.2s;
+  stroke-linejoin: round;
+  stroke-linecap: round; }
+
+.petrinet-transition.enabled:hover .petrinet-transition-blobs path {
+  stroke-width: 14; }
+
+.petrinet-transition-blobs path.petrinet-transition-blobs-post {
+  stroke: #dcf0dc; }
+
+.petrinet-transition-blobs path.petrinet-transition-blobs-pre {
+  stroke: #f0c8dc; }
+
+.petrinet-places circle {
+  fill: white;
+  stroke: black; }
+
+.petrinet-tokens text {
+  text-anchor: middle; }
+
+.petrinet-transitions rect {
+  stroke: black;
+  stroke-width: 1;
+  fill: #c8c8c8;
+  cursor: default;
+  transition: fill 0.6s, stroke-width 0.6s; }
+
+.petrinet-transitions .enabled rect {
+  fill: #927dbc;
+  stroke-width: 1.5;
+  cursor: pointer; }
+
+.petrinet-animating-token {
+  fill: black;
+  opacity: 0; }
+
+.petrinet-arcs path {
+  stroke: black;
+  stroke-width: 1;
+  marker-end: url("#arrow"); }
+
+.petrinet-arcs text {
+  pointer-events: none;
+  user-select: none;
+  text-anchor: middle;
+  opacity: 0.4; }
+
+/*# sourceMappingURL=main.css.map */
