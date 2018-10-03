@@ -42,12 +42,9 @@ svg#defs {
 /*===============================
 Petri Nets
 ===============================*/
-.petrinet-container {
-  padding: 20px; }
-
 .petrinet-container svg {
   margin: auto;
-  display: inherit; }
+  width: 100%; }
 
 .petrinet-transition-blobs path {
   stroke-width: 0;
@@ -79,7 +76,7 @@ Petri Nets
   transition: fill 0.6s, stroke-width 0.6s; }
 
 .petrinet-transitions .enabled rect {
-  fill: #2ee577;
+  fill: #927dbc;
   stroke-width: 1.5;
   cursor: pointer; }
 
