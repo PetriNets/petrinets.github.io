@@ -13,6 +13,9 @@ h1, h2, h3, h4, h5, h6{
     /* width: 100%; */
     /* z-index: -1; */
 }
+#top-nav > main > div > div > div > p > a {
+  color: blue !important;
+}
 #top-nav{
     position: fixed;
     margin-top: -24px;
