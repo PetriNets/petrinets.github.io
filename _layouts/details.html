@@ -13,10 +13,36 @@
                     <div class="mdl-cell mdl-cell--12-col">
                       <h3>{{page.title}}</h3>
                             <petrinet-viewer id="{{page.title}}"></petrinet-viewer>
-                            <script>
+                            <!-- <script>
                             var netInfo = {{ page.net | jsonify}}
                             var title = "{{page.title}}"
                               renderNet(title, netInfo)
+                            </script> -->
+                            <script>
+                            var netInfo = {{ page.net | jsonify}}
+                            var title = "{{petrinet.title}}"
+                            var isChromium = window.chrome;
+                            var winNav = window.navigator;
+                            var vendorName = winNav.vendor;
+                            var isOpera = typeof window.opr !== "undefined";
+                            var isIEedge = winNav.userAgent.indexOf("Edge") > -1;
+                            var isIOSChrome = winNav.userAgent.match("CriOS");
+
+                            if (isIOSChrome) {
+                              // is Google Chrome on IOS
+                            } else if(
+                              isChromium !== null &&
+                              typeof isChromium !== "undefined" &&
+                              vendorName === "Google Inc." &&
+                              isOpera === false &&
+                              isIEedge === false
+                            ) {
+                              // is Google Chrome
+                              renderNet(title, netInfo);
+                            } else {
+                              // not Google Chrome
+                              insertNet(netInfo.net.places, netInfo.net.transitions, netInfo.net.marking, 13)
+                            }
                             </script>
                         {{ content }}
                     </div>
