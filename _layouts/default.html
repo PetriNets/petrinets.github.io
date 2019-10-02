@@ -7,7 +7,7 @@
 {% include pnet-viewer.html %}
 <body id="top">
 
-    <div id="top-nav" class="mdl-layout">
+    <div id="top-nav" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
         <!-- nav -->
         {% include top-nav.html %}
         <main class="mdl-layout__content">
@@ -15,9 +15,9 @@
                 {% for petrinet in site.petrinets %}
                     <div class="title-cont">
                         <a href="{{site.url}}{{ petrinet.url }}">
-                            <div class="inner">
+                            <h3 class="inner">
                                 {{ petrinet.title }}
-                            </div>
+                            </h3>
                         </a>
                     </div>
                     <div class="content-grid mdl-grid nets-container">
