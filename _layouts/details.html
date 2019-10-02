@@ -28,6 +28,11 @@
                             var isIEedge = winNav.userAgent.indexOf("Edge") > -1;
                             var isIOSChrome = winNav.userAgent.match("CriOS");
 
+                            for (var i = 0; i < netInfo.net.transitions.length; i++) {
+                                netInfo.net.transitions[i].x += netInfo.xShift || 0; 
+                                netInfo.net.transitions[i].y += netInfo.yShift || 0; 
+                            }
+
                             if (isIOSChrome) {
                               // is Google Chrome on IOS
                             } else if(
