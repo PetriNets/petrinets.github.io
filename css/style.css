@@ -1,20 +1,28 @@
+@font-face {
+    font-family: "garamond";
+    src: url("/fonts/EBGaramond12-Regular.woff") format('woff');
+}
+
+@font-face {
+    font-family: "garamond";
+    src: url("/fonts/EBGaramond12-Italic.woff") format('woff');
+    font-style: italic;
+}
+
 html{
     overflow-y: hidden;
 }
 body{
     font-size: 16px;
-	font-family: monospace;
+    font-family: monospace;
     margin-top: 24px;
 }
-h1, h2, h3, h4, h5, h6{
-	font-family: monospace;
+h1, h2, h3, h4, h5, h6, .mdl-layout-title {
+    font-family: garamond;
+    font-size: 28px;
 }
-.mdl-layout__content{
-    /* width: 100%; */
-    /* z-index: -1; */
-}
-#top-nav > main > div > div > div > p > a {
-  color: blue !important;
+.mdl-layout__header{
+    background-color: #ddd;
 }
 #top-nav{
     position: fixed;
@@ -45,6 +53,16 @@ h1, h2, h3, h4, h5, h6{
 }
 .title-link{
     padding-left: 0 !important;
+    margin-top: 5px;
+}
+.logo img {
+    height: 40px;
+    margin-right: 16px;
+}
+.mdl-layout__drawer .logo img {
+    margin-top: 40px;
+    margin-left: 40px;
+    height: 80px;
 }
 
 /* pnet containers */
