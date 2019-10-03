@@ -65,8 +65,7 @@ function drawNet_(container, states, transitions, marking, width, height) {
   var svg = d3
     .select(container)
     .append("svg")
-    .attr("width", `${width}px`)
-    .attr("height", `${height}px`);
+    .attr("viewBox", `0 0 ${width} ${height}`);
 
   // define arrow markers for graph links
   svg

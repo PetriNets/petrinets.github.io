@@ -44,7 +44,8 @@ Petri Nets
 ===============================*/
 .petrinet-container svg {
   margin: auto;
-  width: 100%; }
+  width: 100%; 
+  height: auto; }
 
 .petrinet-transition-blobs path {
   stroke-width: 0;

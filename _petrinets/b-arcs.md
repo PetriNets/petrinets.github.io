@@ -10,7 +10,7 @@ net: {
       {"label":"Distribute","x":30,"y":10,"pre":{"Storage":2},"post":{"CustomerA":1,"CustomerB":1}},
       {"label":"ConsumeA","x":50,"y":0,"pre":{"CustomerA":1},"post":{}},
       {"label":"ConsumeB","x":50,"y":20,"pre":{"CustomerB":1},"post":{}}],
-    "marking":{"End":2}
+    "marking":{}
   }
 }
 ---

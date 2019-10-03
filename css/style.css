@@ -38,7 +38,6 @@ h1, h2, h3, h4, h5, h6, .mdl-layout-title {
 }
 .vert-align{
     display: flex;
-    align-items: center;
     flex-direction: column;
     justify-content: center;
 }

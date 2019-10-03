@@ -1,5 +1,7 @@
 svg{
 	padding: 40px;
+	width: 100%;
+	box-sizing: border-box;
 }
 svg text {
 	fill: black;
