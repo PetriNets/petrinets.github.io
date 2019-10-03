@@ -13,7 +13,7 @@
         <main class="mdl-layout__content">
             <div class="page-content">
                 {% for petrinet in site.petrinets %}
-                    <div class="title-cont">
+                    <div class="title-cont" id="{{petrinet.title}}">
                         <a href="{{site.url}}{{ petrinet.url }}">
                             <h3 class="inner">
                                 {{ petrinet.title }}
@@ -23,10 +23,10 @@
                     <div class="content-grid mdl-grid nets-container">
                         <div class="vert-align text-center mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
                             <!-- insert net here -->
-                            <petrinet-viewer id="{{petrinet.title}}"></petrinet-viewer>
+                            <petrinet-viewer id="pn-{{petrinet.title}}"></petrinet-viewer>
                             <script>
                             var netInfo = {{ petrinet.net | jsonify}}
-                            var title = "{{petrinet.title}}"
+                            var title = "pn-{{petrinet.title}}"
                             var isChromium = window.chrome;
                             var winNav = window.navigator;
                             var vendorName = winNav.vendor;
@@ -57,7 +57,7 @@
                             </script>
                         </div>
                         <div class="vert-align mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
-                            {{ petrinet.excerpt }}
+                            {{ petrinet.content }}
                             <!-- net description -->
                         </div>
                     </div>

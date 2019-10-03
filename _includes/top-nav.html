@@ -8,14 +8,9 @@
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation. We hide it in small screens. -->
         <nav class="mdl-navigation mdl-layout--large-screen-only">
-            <a class="mdl-navigation__link" href="/petrinets/2-dining-philosophers.html">2 Philo</a>
-            <a class="mdl-navigation__link" href="/petrinets/3-dining-philosophers.html">3 Philo</a>
-            <a class="mdl-navigation__link" href="/petrinets/4-dining-philosophers.html">4 Philo</a>
-            <a class="mdl-navigation__link" href="/petrinets/4-dining-philosopherss.html">4 Philo-2</a>
-            <a class="mdl-navigation__link" href="/petrinets/producer-consumer.html">Producer-Consumer</a>
-            <a class="mdl-navigation__link" href="/petrinets/split-join.html">Split-Join</a>
-            <a class="mdl-navigation__link" href="/petrinets/traffic-lights.html">Traffic Lights</a>
-            <a class="mdl-navigation__link" href="/petrinets/pawels-net.html">Pawel's Net</a>
+            {% for petrinet in site.petrinets %}
+            <a class="mdl-navigation__link" href="/#{{petrinet.title}}">{{petrinet.title}}</a>
+            {% endfor %}
         </nav>
         <div class="mdl-layout-spacer"></div>
         <a href="https://statebox.org" class="logo"><img src="/img/stbx_logo.svg" /></a>
@@ -24,14 +19,9 @@
 <div class="mdl-layout__drawer">
     <span class="mdl-layout-title">Petri Nets</span>
     <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" href="/petrinets/2-dining-philosophers.html">2 Philo</a>
-        <a class="mdl-navigation__link" href="/petrinets/3-dining-philosophers.html">3 Philo</a>
-        <a class="mdl-navigation__link" href="/petrinets/4-dining-philosophers.html">4 Philo</a>
-        <a class="mdl-navigation__link" href="/petrinets/4-dining-philosopherss.html">4 Philo-2</a>
-        <a class="mdl-navigation__link" href="/petrinets/producer-consumer.html">Producer-Consumer</a>
-        <a class="mdl-navigation__link" href="/petrinets/split-join.html">Split-Join</a>
-        <a class="mdl-navigation__link" href="/petrinets/traffic-lights.html">Traffic Lights</a>
-        <a class="mdl-navigation__link" href="/petrinets/pawels-net.html">Pawel's Net</a>
+        {% for petrinet in site.petrinets %}
+        <a class="mdl-navigation__link" href="/#{{petrinet.title}}">{{petrinet.title}}</a>
+        {% endfor %}
     </nav>
     <a href="https://statebox.org" class="logo"><img src="/img/stbx_logo.svg" /></a>
 </div>
