@@ -10411,7 +10411,7 @@ var _user$project$View_PetriNet$drawArc = F6(
 										{
 											ctor: '::',
 											_0: _elm_lang$svg$Svg$text(
-												_elm_lang$core$Basics$toString(tokens)),
+												(_elm_lang$core$Native_Utils.cmp(tokens, 1) > 0) ? _elm_lang$core$Basics$toString(tokens) : ''),
 											_1: {ctor: '[]'}
 										}),
 									_1: {ctor: '[]'}

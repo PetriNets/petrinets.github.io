@@ -16,6 +16,7 @@ net: {
 ---
 An arc going from a *place* to a *transition* represents the transition *input*; the
 number alongside the arc signifies the number of *consumed* tokens.
+(To avoid clutter, we omit the numbers when they are equal to 1.)
 
 An arc going from a *transition* to a *place* represents the transition *output*; the
 number alongside the arc signifies the number of *produced* tokens.
