@@ -4,6 +4,8 @@ title: Home
 ---
 
 #### Related resources
+[The Mathematical Specification of the Statebox Language ('Monograph')](https://arxiv.org/abs/1906.07629)
+
 [Event Structures - http://www.cl.cam.ac.uk/~gw104/EvStr.pdf](http://www.cl.cam.ac.uk/~gw104/EvStr.pdf)
 
 [Removing Confusion - https://arxiv.org/pdf/1710.04570.pdf](https://arxiv.org/pdf/1710.04570.pdf)
