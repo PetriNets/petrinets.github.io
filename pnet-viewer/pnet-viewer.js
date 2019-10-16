@@ -763,9 +763,15 @@ var PS = {};
   $PS["Data.Semigroup"] = $PS["Data.Semigroup"] || {};
   var exports = $PS["Data.Semigroup"];
   var $foreign = $PS["Data.Semigroup"];
+  var Data_Unit = $PS["Data.Unit"];
   var Semigroup = function (append) {
       this.append = append;
   }; 
+  var semigroupUnit = new Semigroup(function (v) {
+      return function (v1) {
+          return Data_Unit.unit;
+      };
+  });
   var semigroupString = new Semigroup($foreign.concatString);
   var semigroupArray = new Semigroup($foreign.concatArray);
   var append = function (dict) {
@@ -774,6 +780,7 @@ var PS = {};
   exports["Semigroup"] = Semigroup;
   exports["append"] = append;
   exports["semigroupString"] = semigroupString;
+  exports["semigroupUnit"] = semigroupUnit;
   exports["semigroupArray"] = semigroupArray;
 })(PS);
 (function($PS) {
@@ -782,10 +789,14 @@ var PS = {};
   $PS["Data.Monoid"] = $PS["Data.Monoid"] || {};
   var exports = $PS["Data.Monoid"];
   var Data_Semigroup = $PS["Data.Semigroup"];
+  var Data_Unit = $PS["Data.Unit"];
   var Monoid = function (Semigroup0, mempty) {
       this.Semigroup0 = Semigroup0;
       this.mempty = mempty;
-  };                 
+  };
+  var monoidUnit = new Monoid(function () {
+      return Data_Semigroup.semigroupUnit;
+  }, Data_Unit.unit);
   var monoidString = new Monoid(function () {
       return Data_Semigroup.semigroupString;
   }, "");                    
@@ -811,6 +822,7 @@ var PS = {};
   exports["Monoid"] = Monoid;
   exports["mempty"] = mempty;
   exports["guard"] = guard;
+  exports["monoidUnit"] = monoidUnit;
   exports["monoidString"] = monoidString;
   exports["monoidArray"] = monoidArray;
 })(PS);
@@ -3850,7 +3862,38 @@ var PS = {};
     return function () {
       return Aff.Fiber(util, null, aff);
     };
-  };  
+  };
+
+  exports._delay = function () {
+    function setDelay(n, k) {
+      if (n === 0 && typeof setImmediate !== "undefined") {
+        return setImmediate(k);
+      } else {
+        return setTimeout(k, n);
+      }
+    }
+
+    function clearDelay(n, t) {
+      if (n === 0 && typeof clearImmediate !== "undefined") {
+        return clearImmediate(t);
+      } else {
+        return clearTimeout(t);
+      }
+    }
+
+    return function (right, ms) {
+      return Aff.Async(function (cb) {
+        return function () {
+          var timer = setDelay(ms, cb(right()));
+          return function () {
+            return Aff.Sync(function () {
+              return right(clearDelay(ms, timer));
+            });
+          };
+        };
+      });
+    };
+  }();
 
   exports._sequential = Aff.Seq;
 })(PS["Effect.Aff"] = PS["Effect.Aff"] || {});
@@ -3942,6 +3985,8 @@ var PS = {};
   var Data_Either = $PS["Data.Either"];
   var Data_Function = $PS["Data.Function"];
   var Data_Functor = $PS["Data.Functor"];
+  var Data_Monoid = $PS["Data.Monoid"];
+  var Data_Semigroup = $PS["Data.Semigroup"];
   var Data_Unit = $PS["Data.Unit"];
   var Effect = $PS["Effect"];
   var Effect_Class = $PS["Effect.Class"];
@@ -4006,7 +4051,10 @@ var PS = {};
       return function ($50) {
           return $49(launchAff($50));
       };
-  })();
+  })();                              
+  var delay = function (v) {
+      return $foreign["_delay"](Data_Either.Right.create, v);
+  };
   var bracket = function (acquire) {
       return function (completed) {
           return $foreign.generalBracket(acquire)({
@@ -4037,6 +4085,9 @@ var PS = {};
       return function (a) {
           return bracket(Control_Applicative.pure(applicativeAff)(Data_Unit.unit))(Data_Function["const"](fin))(Data_Function["const"](a));
       };
+  }; 
+  var semigroupAff = function (dictSemigroup) {
+      return new Data_Semigroup.Semigroup(Control_Apply.lift2(applyAff)(Data_Semigroup.append(dictSemigroup)));
   };
   var monadEffectAff = new Effect_Class.MonadEffect(function () {
       return monadAff;
@@ -4120,11 +4171,17 @@ var PS = {};
       };
       return go;
   });
+  var monoidAff = function (dictMonoid) {
+      return new Data_Monoid.Monoid(function () {
+          return semigroupAff(dictMonoid.Semigroup0());
+      }, Control_Applicative.pure(applicativeAff)(Data_Monoid.mempty(dictMonoid)));
+  };
   var nonCanceler = Data_Function["const"](Control_Applicative.pure(applicativeAff)(Data_Unit.unit));
   exports["launchAff_"] = launchAff_;
   exports["runAff_"] = runAff_;
   exports["forkAff"] = forkAff;
   exports["suspendAff"] = suspendAff;
+  exports["delay"] = delay;
   exports["finally"] = $$finally;
   exports["killFiber"] = killFiber;
   exports["joinFiber"] = joinFiber;
@@ -4134,6 +4191,7 @@ var PS = {};
   exports["applicativeAff"] = applicativeAff;
   exports["bindAff"] = bindAff;
   exports["monadAff"] = monadAff;
+  exports["monoidAff"] = monoidAff;
   exports["monadRecAff"] = monadRecAff;
   exports["monadErrorAff"] = monadErrorAff;
   exports["monadEffectAff"] = monadEffectAff;
@@ -7651,6 +7709,7 @@ var PS = {};
   exports["computeTransitionIds"] = computeTransitionIds;
   exports["fire"] = fire;
   exports["isTransitionEnabled"] = isTransitionEnabled;
+  exports["preMarking"] = preMarking;
 })(PS);
 (function($PS) {
   // Generated by purs version 0.13.3
@@ -7915,6 +7974,16 @@ var PS = {};
   var $foreign = $PS["Data.String.Common"];
   exports["toUpper"] = $foreign.toUpper;
   exports["joinWith"] = $foreign.joinWith;
+})(PS);
+(function($PS) {
+  // Generated by purs version 0.13.3
+  "use strict";
+  $PS["Data.Time.Duration"] = $PS["Data.Time.Duration"] || {};
+  var exports = $PS["Data.Time.Duration"];
+  var Milliseconds = function (x) {
+      return x;
+  };
+  exports["Milliseconds"] = Milliseconds;
 })(PS);
 (function(exports) {
   "use strict";
@@ -12224,7 +12293,8 @@ var PS = {};
   var netScale = 100.0;
   var fontSize = 0.13;
   var bipartiteLayoutScale = 10.0;
-  var arcAnimationDuration = Svg_Attributes.seconds(0.7);
+  var arcAnimationDurationSec = 0.7;
+  var arcAnimationDuration = Svg_Attributes.seconds(arcAnimationDurationSec);
   exports["netScale"] = netScale;
   exports["bipartiteLayoutScale"] = bipartiteLayoutScale;
   exports["fontSize"] = fontSize;
@@ -12233,6 +12303,7 @@ var PS = {};
   exports["tokenRadius"] = tokenRadius;
   exports["transitionHeight"] = transitionHeight;
   exports["transitionWidth"] = transitionWidth;
+  exports["arcAnimationDurationSec"] = arcAnimationDurationSec;
   exports["arcAnimationDuration"] = arcAnimationDuration;
 })(PS);
 (function($PS) {
@@ -12479,11 +12550,14 @@ var PS = {};
   var Data_Semiring = $PS["Data.Semiring"];
   var Data_Set = $PS["Data.Set"];
   var Data_Show = $PS["Data.Show"];
+  var Data_Time_Duration = $PS["Data.Time.Duration"];
   var Data_Traversable = $PS["Data.Traversable"];
   var Data_Tuple = $PS["Data.Tuple"];
   var Data_Unfoldable = $PS["Data.Unfoldable"];
+  var Data_Unit = $PS["Data.Unit"];
   var Data_Vec3_Box = $PS["Data.Vec3.Box"];
   var Data_Vec3_Vec3 = $PS["Data.Vec3.Vec3"];
+  var Effect_Aff = $PS["Effect.Aff"];
   var Effect_Aff_Class = $PS["Effect.Aff.Class"];
   var Halogen_Component = $PS["Halogen.Component"];
   var Halogen_HTML_Core = $PS["Halogen.HTML.Core"];
@@ -12509,7 +12583,7 @@ var PS = {};
           if (mx instanceof Data_Maybe.Just) {
               return Data_Maybe.Nothing.value;
           };
-          throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 530, column 20 - line 532, column 21): " + [ mx.constructor.name ]);
+          throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 544, column 20 - line 546, column 21): " + [ mx.constructor.name ]);
       };
   };
   var svgPath = function (p) {
@@ -12598,17 +12672,17 @@ var PS = {};
                               };
                           };
                           var mkTransitionIdStr = function (dictShow2) {
-                              var $187 = Data_Semigroup.append(Data_Semigroup.semigroupString)(netPrefix);
-                              var $188 = prefixTransition(dictShow2);
-                              return function ($189) {
-                                  return $187($188($189));
+                              var $197 = Data_Semigroup.append(Data_Semigroup.semigroupString)(netPrefix);
+                              var $198 = prefixTransition(dictShow2);
+                              return function ($199) {
+                                  return $197($198($199));
                               };
                           };
                           var mkPlaceIdStr = function (dictShow2) {
-                              var $190 = Data_Semigroup.append(Data_Semigroup.semigroupString)(netPrefix);
-                              var $191 = prefixPlace(dictShow2);
-                              return function ($192) {
-                                  return $190($191($192));
+                              var $200 = Data_Semigroup.append(Data_Semigroup.semigroupString)(netPrefix);
+                              var $201 = prefixPlace(dictShow2);
+                              return function ($202) {
+                                  return $200($201($202));
                               };
                           };
                           var svgPlace = function (dictShow2) {
@@ -12624,12 +12698,12 @@ var PS = {};
                                               };
                                               return 0.5;
                                           };
-                                          var $87 = tokens1 === 0;
-                                          if ($87) {
+                                          var $91 = tokens1 === 0;
+                                          if ($91) {
                                               return Halogen_HTML_Core.text("");
                                           };
-                                          var $88 = tokens1 === 1 || tokens1 > 5;
-                                          if ($88) {
+                                          var $92 = tokens1 === 1 || tokens1 > 5;
+                                          if ($92) {
                                               return Svg_Elements.circle([ Svg_Attributes.r(View_Petrinet_Config.tokenRadius), Svg_Attributes.cx(Data_Vec3_Vec3["_x"](point1)), Svg_Attributes.cy(Data_Vec3_Vec3["_y"](point1)), Svg_Attributes.class_("css-token-in-place") ]);
                                           };
                                           return Svg_Elements.g([  ])(Data_Functor.mapFlipped(Data_Functor.functorArray)(Data_Array.range(1)(tokens1))(function (i) {
@@ -12638,8 +12712,8 @@ var PS = {};
                                       };
                                   };
                                   return Svg_Elements.g([ Svg_Attributes.id(mkPlaceIdStr(dictShow2)(v.id)) ])([ Svg_Elements.title([  ])([ Halogen_HTML_Core.text(v.label) ]), Svg_Elements.circle([ Svg_Attributes.class_("css-place" + Data_Monoid.guard(Data_Monoid.monoidString)(v.isFocused)(" focused")), Svg_Attributes.r(View_Petrinet_Config.placeRadius), Svg_Attributes.cx(Data_Vec3_Vec3["_x"](v.point)), Svg_Attributes.cy(Data_Vec3_Vec3["_y"](v.point)) ]), svgTokens(v.tokens)(v.point), Svg_Elements.text([ Svg_Attributes.class_("css-place-name-label"), Svg_Attributes.x(Data_Vec3_Vec3["_x"](v.point)), Svg_Attributes.y(Data_Vec3_Vec3["_y"](v.point) + 2.0 * View_Petrinet_Config.placeRadius + 0.25 * View_Petrinet_Config.fontSize), Svg_Attributes.font_size(Svg_Attributes.FontSizeLength.create(new Svg_Attributes.Em(View_Petrinet_Config.fontSize))) ])([ Halogen_HTML_Core.text(v.label) ]), Svg_Elements.text([ Svg_Attributes.class_("css-place-label"), Svg_Attributes.x(Data_Vec3_Vec3["_x"](v.point) + View_Petrinet_Config.tokenPadding), Svg_Attributes.y(Data_Vec3_Vec3["_y"](v.point) - View_Petrinet_Config.tokenPadding), Svg_Attributes.font_size(Svg_Attributes.FontSizeLength.create(new Svg_Attributes.Em(View_Petrinet_Config.fontSize))) ])([ Halogen_HTML_Core.text((function () {
-                                      var $89 = v.tokens < 6;
-                                      if ($89) {
+                                      var $93 = v.tokens < 6;
+                                      if ($93) {
                                           return "";
                                       };
                                       return Data_Show.show(Data_Show.showInt)(v.tokens);
@@ -12662,20 +12736,25 @@ var PS = {};
                                   focusedTransition: Control_Plus.empty(Data_Maybe.plusMaybe),
                                   placeLabelsVisible: true,
                                   transitionLabelsVisible: true,
-                                  arcLabelsVisible: true
+                                  arcLabelsVisible: true,
+                                  overrideMarking: Data_Maybe.Nothing.value
                               };
                           };
                           var componentHtmlId = netPrefix + Data_Newtype.un(Halogen_HTML_Core.newtypeClassName)(Halogen_HTML_Core.ClassName)("petrinet-component");
                           var arcAnimationClass = function (dictShow2) {
-                              var mkArcClass = function (dictShow3) {
-                                  return function (tid) {
-                                      return "arc_" + prefixTransition(dictShow3)(tid);
+                              return function (tid) {
+                                  return function (isPost) {
+                                      var prefix = function (v) {
+                                          if (v) {
+                                              return "arc_post_";
+                                          };
+                                          if (!v) {
+                                              return "arc_pre_";
+                                          };
+                                          throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 487, column 9 - line 487, column 34): " + [ v.constructor.name ]);
+                                      };
+                                      return tokenAnimatedClass(netPrefix + (prefix(isPost) + prefixTransition(dictShow2)(tid)));
                                   };
-                              };
-                              var $193 = Data_Semigroup.append(Data_Semigroup.semigroupString)(netPrefix);
-                              var $194 = mkArcClass(dictShow2);
-                              return function ($195) {
-                                  return $193(tokenAnimatedClass($194($195)));
                               };
                           };
                           var handleAction = function (dictOrd2) {
@@ -12691,207 +12770,230 @@ var PS = {};
                                               types: v.value0.types
                                           });
                                           return Control_Monad_State_Class.modify_(Halogen_Query_HalogenM.monadStateHalogenM)(function (state) {
-                                              var $96 = {};
-                                              for (var $97 in state) {
-                                                  if ({}.hasOwnProperty.call(state, $97)) {
-                                                      $96[$97] = state[$97];
+                                              var $101 = {};
+                                              for (var $102 in state) {
+                                                  if ({}.hasOwnProperty.call(state, $102)) {
+                                                      $101[$102] = state[$102];
                                                   };
                                               };
-                                              $96.netInfo = scaledNetInfo;
-                                              return $96;
+                                              $101.netInfo = scaledNetInfo;
+                                              return $101;
                                           });
                                       };
                                       if (v instanceof View_Petrinet_Model.FocusPlace) {
                                           return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v1) {
                                               var focusedPlace$prime = toggleMaybe(v.value0)(v1.focusedPlace);
                                               return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
-                                                  var $101 = {};
-                                                  for (var $102 in v1) {
-                                                      if ({}.hasOwnProperty.call(v1, $102)) {
-                                                          $101[$102] = v1[$102];
+                                                  var $106 = {};
+                                                  for (var $107 in v1) {
+                                                      if ({}.hasOwnProperty.call(v1, $107)) {
+                                                          $106[$107] = v1[$107];
                                                       };
                                                   };
-                                                  $101.focusedPlace = focusedPlace$prime;
-                                                  $101.msg = Data_Maybe.maybe("Focused")(Data_Function["const"]("Unfocused"))(v1.focusedPlace) + (" place " + (Data_Show.show(dictShow)(v.value0) + (" (" + (Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd)(v.value0)(v1.netInfo.net.placeLabelsDict)) + ")."))));
-                                                  return $101;
+                                                  $106.focusedPlace = focusedPlace$prime;
+                                                  $106.msg = Data_Maybe.maybe("Focused")(Data_Function["const"]("Unfocused"))(v1.focusedPlace) + (" place " + (Data_Show.show(dictShow)(v.value0) + (" (" + (Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd)(v.value0)(v1.netInfo.net.placeLabelsDict)) + ")."))));
+                                                  return $106;
                                               })());
                                           });
                                       };
                                       if (v instanceof View_Petrinet_Model.UpdatePlace) {
                                           return Control_Monad_State_Class.modify_(Halogen_Query_HalogenM.monadStateHalogenM)(function (state) {
-                                              var $111 = {};
-                                              for (var $112 in state) {
-                                                  if ({}.hasOwnProperty.call(state, $112)) {
-                                                      $111[$112] = state[$112];
+                                              var $116 = {};
+                                              for (var $117 in state) {
+                                                  if ({}.hasOwnProperty.call(state, $117)) {
+                                                      $116[$117] = state[$117];
                                                   };
                                               };
-                                              $111.netInfo = (function () {
-                                                  var $108 = {};
-                                                  for (var $109 in state.netInfo) {
-                                                      if ({}.hasOwnProperty.call(state.netInfo, $109)) {
-                                                          $108[$109] = state["netInfo"][$109];
+                                              $116.netInfo = (function () {
+                                                  var $113 = {};
+                                                  for (var $114 in state.netInfo) {
+                                                      if ({}.hasOwnProperty.call(state.netInfo, $114)) {
+                                                          $113[$114] = state["netInfo"][$114];
                                                       };
                                                   };
-                                                  $108.net = (function () {
-                                                      var $105 = {};
-                                                      for (var $106 in state.netInfo.net) {
-                                                          if ({}.hasOwnProperty.call(state.netInfo.net, $106)) {
-                                                              $105[$106] = state["netInfo"]["net"][$106];
+                                                  $113.net = (function () {
+                                                      var $110 = {};
+                                                      for (var $111 in state.netInfo.net) {
+                                                          if ({}.hasOwnProperty.call(state.netInfo.net, $111)) {
+                                                              $110[$111] = state["netInfo"]["net"][$111];
                                                           };
                                                       };
-                                                      $105.placeLabelsDict = Data_Map_Internal.insert(dictOrd)(v.value0.value0)(v.value0.value1)(state.netInfo.net.placeLabelsDict);
-                                                      return $105;
+                                                      $110.placeLabelsDict = Data_Map_Internal.insert(dictOrd)(v.value0.value0)(v.value0.value1)(state.netInfo.net.placeLabelsDict);
+                                                      return $110;
                                                   })();
-                                                  return $108;
+                                                  return $113;
                                               })();
-                                              $111.msg = "Updated place " + (Data_Show.show(dictShow)(v.value0.value0) + ".");
-                                              return $111;
+                                              $116.msg = "Updated place " + (Data_Show.show(dictShow)(v.value0.value0) + ".");
+                                              return $116;
                                           });
                                       };
                                       if (v instanceof View_Petrinet_Model.UpdateTransition && v.value0 instanceof View_Petrinet_Model.UpdateTransitionName) {
                                           return Control_Monad_State_Class.modify_(Halogen_Query_HalogenM.monadStateHalogenM)(function (state) {
-                                              var $123 = {};
-                                              for (var $124 in state) {
-                                                  if ({}.hasOwnProperty.call(state, $124)) {
-                                                      $123[$124] = state[$124];
+                                              var $128 = {};
+                                              for (var $129 in state) {
+                                                  if ({}.hasOwnProperty.call(state, $129)) {
+                                                      $128[$129] = state[$129];
                                                   };
                                               };
-                                              $123.netInfo = (function () {
-                                                  var $120 = {};
-                                                  for (var $121 in state.netInfo) {
-                                                      if ({}.hasOwnProperty.call(state.netInfo, $121)) {
-                                                          $120[$121] = state["netInfo"][$121];
+                                              $128.netInfo = (function () {
+                                                  var $125 = {};
+                                                  for (var $126 in state.netInfo) {
+                                                      if ({}.hasOwnProperty.call(state.netInfo, $126)) {
+                                                          $125[$126] = state["netInfo"][$126];
                                                       };
                                                   };
-                                                  $120.net = (function () {
-                                                      var $117 = {};
-                                                      for (var $118 in state.netInfo.net) {
-                                                          if ({}.hasOwnProperty.call(state.netInfo.net, $118)) {
-                                                              $117[$118] = state["netInfo"]["net"][$118];
+                                                  $125.net = (function () {
+                                                      var $122 = {};
+                                                      for (var $123 in state.netInfo.net) {
+                                                          if ({}.hasOwnProperty.call(state.netInfo.net, $123)) {
+                                                              $122[$123] = state["netInfo"]["net"][$123];
                                                           };
                                                       };
-                                                      $117.transitionLabelsDict = Data_Map_Internal.insert(dictOrd2)(v.value0.value0)(v.value0.value1)(state.netInfo.net.transitionLabelsDict);
-                                                      return $117;
+                                                      $122.transitionLabelsDict = Data_Map_Internal.insert(dictOrd2)(v.value0.value0)(v.value0.value1)(state.netInfo.net.transitionLabelsDict);
+                                                      return $122;
                                                   })();
-                                                  return $120;
+                                                  return $125;
                                               })();
-                                              $123.msg = "Updated transition " + (Data_Show.show(dictShow2)(v.value0.value0) + ".");
-                                              return $123;
+                                              $128.msg = "Updated transition " + (Data_Show.show(dictShow2)(v.value0.value0) + ".");
+                                              return $128;
                                           });
                                       };
                                       if (v instanceof View_Petrinet_Model.UpdateTransition && v.value0 instanceof View_Petrinet_Model.UpdateTransitionType) {
                                           return Control_Monad_State_Class.modify_(Halogen_Query_HalogenM.monadStateHalogenM)(function (state) {
-                                              var $135 = {};
-                                              for (var $136 in state) {
-                                                  if ({}.hasOwnProperty.call(state, $136)) {
-                                                      $135[$136] = state[$136];
+                                              var $140 = {};
+                                              for (var $141 in state) {
+                                                  if ({}.hasOwnProperty.call(state, $141)) {
+                                                      $140[$141] = state[$141];
                                                   };
                                               };
-                                              $135.netInfo = (function () {
-                                                  var $132 = {};
-                                                  for (var $133 in state.netInfo) {
-                                                      if ({}.hasOwnProperty.call(state.netInfo, $133)) {
-                                                          $132[$133] = state["netInfo"][$133];
+                                              $140.netInfo = (function () {
+                                                  var $137 = {};
+                                                  for (var $138 in state.netInfo) {
+                                                      if ({}.hasOwnProperty.call(state.netInfo, $138)) {
+                                                          $137[$138] = state["netInfo"][$138];
                                                       };
                                                   };
-                                                  $132.net = (function () {
-                                                      var $129 = {};
-                                                      for (var $130 in state.netInfo.net) {
-                                                          if ({}.hasOwnProperty.call(state.netInfo.net, $130)) {
-                                                              $129[$130] = state["netInfo"]["net"][$130];
+                                                  $137.net = (function () {
+                                                      var $134 = {};
+                                                      for (var $135 in state.netInfo.net) {
+                                                          if ({}.hasOwnProperty.call(state.netInfo.net, $135)) {
+                                                              $134[$135] = state["netInfo"]["net"][$135];
                                                           };
                                                       };
-                                                      $129.transitionTypesDict = Data_Map_Internal.insert(dictOrd2)(v.value0.value0)(v.value0.value1)(state.netInfo.net.transitionTypesDict);
-                                                      return $129;
+                                                      $134.transitionTypesDict = Data_Map_Internal.insert(dictOrd2)(v.value0.value0)(v.value0.value1)(state.netInfo.net.transitionTypesDict);
+                                                      return $134;
                                                   })();
-                                                  return $132;
+                                                  return $137;
                                               })();
-                                              $135.msg = "Updated transition " + (Data_Show.show(dictShow2)(v.value0.value0) + ".");
-                                              return $135;
+                                              $140.msg = "Updated transition " + (Data_Show.show(dictShow2)(v.value0.value0) + ".");
+                                              return $140;
                                           });
                                       };
                                       if (v instanceof View_Petrinet_Model.FocusTransition) {
                                           return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v1) {
                                               var focusedTransition$prime = toggleMaybe(v.value0)(v1.focusedTransition);
                                               return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
-                                                  var $142 = {};
-                                                  for (var $143 in v1) {
-                                                      if ({}.hasOwnProperty.call(v1, $143)) {
-                                                          $142[$143] = v1[$143];
+                                                  var $147 = {};
+                                                  for (var $148 in v1) {
+                                                      if ({}.hasOwnProperty.call(v1, $148)) {
+                                                          $147[$148] = v1[$148];
                                                       };
                                                   };
-                                                  $142.focusedTransition = focusedTransition$prime;
-                                                  $142.msg = Data_Maybe.maybe("Focused")(Data_Function["const"]("Unfocused"))(v1.focusedTransition) + (" transition " + (Data_Show.show(dictShow2)(v.value0) + (" (" + (Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd2)(v.value0)(v1.netInfo.net.transitionLabelsDict)) + ")."))));
-                                                  return $142;
+                                                  $147.focusedTransition = focusedTransition$prime;
+                                                  $147.msg = Data_Maybe.maybe("Focused")(Data_Function["const"]("Unfocused"))(v1.focusedTransition) + (" transition " + (Data_Show.show(dictShow2)(v.value0) + (" (" + (Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd2)(v.value0)(v1.netInfo.net.transitionLabelsDict)) + ")."))));
+                                                  return $147;
                                               })());
                                           });
                                       };
                                       if (v instanceof View_Petrinet_Model.FireTransition) {
-                                          return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Svg_Util.beginElements("#" + (componentHtmlId + (" ." + arcAnimationClass(dictShow2)(v.value0))))))(function (v1) {
-                                              return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v2) {
-                                                  var netMaybe$prime = Data_Functor.map(Data_Maybe.functorMaybe)(Data_Petrinet_Representation_Dict.fire(dictOrd)(Data_Semiring.semiringInt)(Data_Bag.groupBagF(Data_Bag.monoidBagF(Data_Bag.semigroupBagF(dictOrd)(Data_Monoid_Additive.semigroupAdditive(Data_Semiring.semiringInt))))(Data_Group.groupAdditive(Data_Ring.ringInt)))(v2.netInfo.net))(v2.netInfo.netApi.transition(v.value0));
-                                                  var net$prime = Data_Maybe.fromMaybe(v2.netInfo.net)(netMaybe$prime);
-                                                  return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
-                                                      var $151 = {};
-                                                      for (var $152 in v2) {
-                                                          if ({}.hasOwnProperty.call(v2, $152)) {
-                                                              $151[$152] = v2[$152];
+                                          return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v1) {
+                                              return Data_Maybe.maybe(Control_Applicative.pure(Halogen_Query_HalogenM.applicativeHalogenM)(Data_Unit.unit))(function (t) {
+                                                  var marking$prime = Data_Semigroup.append(Data_Bag.semigroupBagF(dictOrd)(Data_Monoid_Additive.semigroupAdditive(Data_Semiring.semiringInt)))(Data_Petrinet_Representation_Dict.preMarking(dictOrd)(Data_Bag.groupBagF(Data_Bag.monoidBagF(Data_Bag.semigroupBagF(dictOrd)(Data_Monoid_Additive.semigroupAdditive(Data_Semiring.semiringInt))))(Data_Group.groupAdditive(Data_Ring.ringInt)))(t))(v1.netInfo.net.marking);
+                                                  var net$prime = Data_Petrinet_Representation_Dict.fire(dictOrd)(Data_Semiring.semiringInt)(Data_Bag.groupBagF(Data_Bag.monoidBagF(Data_Bag.semigroupBagF(dictOrd)(Data_Monoid_Additive.semigroupAdditive(Data_Semiring.semiringInt))))(Data_Group.groupAdditive(Data_Ring.ringInt)))(v1.netInfo.net)(t);
+                                                  return Control_Bind.discard(Control_Bind.discardUnit)(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
+                                                      var $155 = {};
+                                                      for (var $156 in v1) {
+                                                          if ({}.hasOwnProperty.call(v1, $156)) {
+                                                              $155[$156] = v1[$156];
                                                           };
                                                       };
-                                                      $151.netInfo = (function () {
-                                                          var $148 = {};
-                                                          for (var $149 in v2.netInfo) {
-                                                              if ({}.hasOwnProperty.call(v2.netInfo, $149)) {
-                                                                  $148[$149] = v2["netInfo"][$149];
+                                                      $155.netInfo = (function () {
+                                                          var $152 = {};
+                                                          for (var $153 in v1.netInfo) {
+                                                              if ({}.hasOwnProperty.call(v1.netInfo, $153)) {
+                                                                  $152[$153] = v1["netInfo"][$153];
                                                               };
                                                           };
-                                                          $148.net = net$prime;
-                                                          return $148;
+                                                          $152.net = net$prime;
+                                                          return $152;
                                                       })();
-                                                      $151.msg = "Fired transition " + (Data_Show.show(dictShow2)(v.value0) + (" (" + (Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd2)(v.value0)(net$prime.transitionLabelsDict)) + ").")));
-                                                      return $151;
-                                                  })());
-                                              });
+                                                      $155.overrideMarking = new Data_Maybe.Just(marking$prime);
+                                                      $155.msg = "Firing transition " + Data_Show.show(dictShow2)(v.value0);
+                                                      return $155;
+                                                  })()))(function () {
+                                                      return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Svg_Util.beginElements("#" + (componentHtmlId + (" ." + arcAnimationClass(dictShow2)(v.value0)(false))))))(function (v2) {
+                                                          return Control_Bind.discard(Control_Bind.discardUnit)(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Data_Monoid.guard(Effect_Aff.monoidAff(Data_Monoid.monoidUnit))(v2 > 0)(Effect_Aff.delay(Data_Time_Duration.Milliseconds(View_Petrinet_Config.arcAnimationDurationSec * 1000.0)))))(function () {
+                                                              return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Svg_Util.beginElements("#" + (componentHtmlId + (" ." + arcAnimationClass(dictShow2)(v.value0)(true))))))(function (v3) {
+                                                                  return Control_Bind.discard(Control_Bind.discardUnit)(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Data_Monoid.guard(Effect_Aff.monoidAff(Data_Monoid.monoidUnit))(v3 > 0)(Effect_Aff.delay(Data_Time_Duration.Milliseconds(View_Petrinet_Config.arcAnimationDurationSec * 1000.0)))))(function () {
+                                                                      return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v4) {
+                                                                          return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
+                                                                              var $161 = {};
+                                                                              for (var $162 in v4) {
+                                                                                  if ({}.hasOwnProperty.call(v4, $162)) {
+                                                                                      $161[$162] = v4[$162];
+                                                                                  };
+                                                                              };
+                                                                              $161.overrideMarking = Data_Maybe.Nothing.value;
+                                                                              $161.msg = "Fired transition " + (Data_Show.show(dictShow2)(v.value0) + (" (" + (Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd2)(v.value0)(net$prime.transitionLabelsDict)) + ").")));
+                                                                              return $161;
+                                                                          })());
+                                                                      });
+                                                                  });
+                                                              });
+                                                          });
+                                                      });
+                                                  });
+                                              })(v1.netInfo.netApi.transition(v.value0));
                                           });
                                       };
                                       if (v instanceof View_Petrinet_Model.ToggleLabelVisibility) {
                                           return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v1) {
                                               return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
                                                   if (v.value0 instanceof View_Petrinet_Model.Arc) {
-                                                      var $157 = {};
-                                                      for (var $158 in v1) {
-                                                          if ({}.hasOwnProperty.call(v1, $158)) {
-                                                              $157[$158] = v1[$158];
+                                                      var $167 = {};
+                                                      for (var $168 in v1) {
+                                                          if ({}.hasOwnProperty.call(v1, $168)) {
+                                                              $167[$168] = v1[$168];
                                                           };
                                                       };
-                                                      $157.arcLabelsVisible = !v1.arcLabelsVisible;
-                                                      return $157;
+                                                      $167.arcLabelsVisible = !v1.arcLabelsVisible;
+                                                      return $167;
                                                   };
                                                   if (v.value0 instanceof View_Petrinet_Model.Place) {
-                                                      var $160 = {};
-                                                      for (var $161 in v1) {
-                                                          if ({}.hasOwnProperty.call(v1, $161)) {
-                                                              $160[$161] = v1[$161];
+                                                      var $170 = {};
+                                                      for (var $171 in v1) {
+                                                          if ({}.hasOwnProperty.call(v1, $171)) {
+                                                              $170[$171] = v1[$171];
                                                           };
                                                       };
-                                                      $160.placeLabelsVisible = !v1.placeLabelsVisible;
-                                                      return $160;
+                                                      $170.placeLabelsVisible = !v1.placeLabelsVisible;
+                                                      return $170;
                                                   };
                                                   if (v.value0 instanceof View_Petrinet_Model.Transition) {
-                                                      var $163 = {};
-                                                      for (var $164 in v1) {
-                                                          if ({}.hasOwnProperty.call(v1, $164)) {
-                                                              $163[$164] = v1[$164];
+                                                      var $173 = {};
+                                                      for (var $174 in v1) {
+                                                          if ({}.hasOwnProperty.call(v1, $174)) {
+                                                              $173[$174] = v1[$174];
                                                           };
                                                       };
-                                                      $163.transitionLabelsVisible = !v1.transitionLabelsVisible;
-                                                      return $163;
+                                                      $173.transitionLabelsVisible = !v1.transitionLabelsVisible;
+                                                      return $173;
                                                   };
-                                                  throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 224, column 17 - line 227, column 94): " + [ v.value0.constructor.name ]);
+                                                  throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 238, column 17 - line 241, column 94): " + [ v.value0.constructor.name ]);
                                               })());
                                           });
                                       };
-                                      throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 185, column 20 - line 227, column 94): " + [ v.constructor.name ]);
+                                      throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 191, column 20 - line 241, column 94): " + [ v.constructor.name ]);
                                   };
                               };
                           };
@@ -12901,7 +13003,7 @@ var PS = {};
                                       return v / 4.0;
                                   });
                                   var animationId = tokenAnimatedClass(arc.htmlId);
-                                  return Svg_Elements.circleNode([ Svg_Attributes.class_("css-token-animated"), Svg_Attributes.cx(0.0), Svg_Attributes.cy(0.0), Svg_Attributes.r(0.0) ])([ Svg_Elements.animateMotion([ Svg_Attributes.id(animationId), Svg_Attributes.class_(arcAnimationClass(dictShow2)(arc.tid)), Svg_Attributes.begin("indefinite"), Svg_Attributes.dur(View_Petrinet_Config.arcAnimationDuration), Svg_Attributes.fillAnim(Svg_Attributes.Freeze.value) ])([ Svg_Elements.mpath([ Svg_Attributes.attr("href")("#" + arc.htmlId) ]) ]), Svg_Elements.animate([ Svg_Attributes.attributeName("opacity"), Svg_Attributes.from("0"), Svg_Attributes.to("1"), Svg_Attributes.begin("indefinite"), Svg_Attributes.dur(tokenFadeDuration), Svg_Attributes.fillAnim(Svg_Attributes.Freeze.value), Svg_Attributes.class_(arcAnimationClass(dictShow2)(arc.tid)) ]), Svg_Elements.animate([ Svg_Attributes.attributeName("r"), Svg_Attributes.from(Data_Show.show(Data_Show.showNumber)(0.0)), Svg_Attributes.to(Data_Show.show(Data_Show.showNumber)(1.5 * View_Petrinet_Config.tokenRadius)), Svg_Attributes.begin("indefinite"), Svg_Attributes.dur(tokenFadeDuration), Svg_Attributes.fillAnim(Svg_Attributes.Freeze.value), Svg_Attributes.class_(arcAnimationClass(dictShow2)(arc.tid)) ]) ]);
+                                  return Svg_Elements.circleNode([ Svg_Attributes.class_("css-token-animated"), Svg_Attributes.cx(0.0), Svg_Attributes.cy(0.0), Svg_Attributes.r(0.0) ])([ Svg_Elements.animateMotion([ Svg_Attributes.id(animationId), Svg_Attributes.class_(arcAnimationClass(dictShow2)(arc.tid)(arc.isPost)), Svg_Attributes.begin("indefinite"), Svg_Attributes.dur(View_Petrinet_Config.arcAnimationDuration), Svg_Attributes.fillAnim(Svg_Attributes.Freeze.value) ])([ Svg_Elements.mpath([ Svg_Attributes.attr("href")("#" + arc.htmlId) ]) ]), Svg_Elements.animate([ Svg_Attributes.attributeName("opacity"), Svg_Attributes.from("0"), Svg_Attributes.to("1"), Svg_Attributes.begin("indefinite"), Svg_Attributes.dur(tokenFadeDuration), Svg_Attributes.fillAnim(Svg_Attributes.Freeze.value), Svg_Attributes.class_(arcAnimationClass(dictShow2)(arc.tid)(arc.isPost)) ]), Svg_Elements.animate([ Svg_Attributes.attributeName("r"), Svg_Attributes.from(Data_Show.show(Data_Show.showNumber)(0.0)), Svg_Attributes.to(Data_Show.show(Data_Show.showNumber)(1.5 * View_Petrinet_Config.tokenRadius)), Svg_Attributes.begin("indefinite"), Svg_Attributes.dur(tokenFadeDuration), Svg_Attributes.fillAnim(Svg_Attributes.Freeze.value), Svg_Attributes.class_(arcAnimationClass(dictShow2)(arc.tid)(arc.isPost)) ]) ]);
                               };
                           };
                           var svgArc = function (dictShow2) {
@@ -13002,10 +13104,10 @@ var PS = {};
                                                               };
                                                           };
                                                           var svgTransitions = Data_Array.catMaybes(Data_Functor.map(Data_Functor.functorArray)((function () {
-                                                              var $196 = Data_Functor.map(Data_Maybe.functorMaybe)(svgTransitionAndArcs(dictShow3));
-                                                              var $197 = Data_Tuple.uncurry(mkTransitionAndArcsModel);
-                                                              return function ($198) {
-                                                                  return $196($197($198));
+                                                              var $203 = Data_Functor.map(Data_Maybe.functorMaybe)(svgTransitionAndArcs(dictShow3));
+                                                              var $204 = Data_Tuple.uncurry(mkTransitionAndArcsModel);
+                                                              return function ($205) {
+                                                                  return $203($204($205));
                                                               };
                                                           })())(Data_Map_Internal.toUnfoldable(Data_Unfoldable.unfoldableArray)(v.net.transitionsDict)));
                                                           var mkPlaceModel = function (id) {
@@ -13023,9 +13125,9 @@ var PS = {};
                                                               });
                                                           };
                                                           var svgPlaces = Data_Array.catMaybes(Data_Functor.map(Data_Functor.functorArray)((function () {
-                                                              var $199 = Data_Functor.map(Data_Maybe.functorMaybe)(svgPlace(dictShow));
-                                                              return function ($200) {
-                                                                  return $199(mkPlaceModel($200));
+                                                              var $206 = Data_Functor.map(Data_Maybe.functorMaybe)(svgPlace(dictShow));
+                                                              return function ($207) {
+                                                                  return $206(mkPlaceModel($207));
                                                               };
                                                           })())(v.net.places));
                                                           return Data_Semigroup.append(Data_Semigroup.semigroupArray)(svgDefs)(Data_Semigroup.append(Data_Semigroup.semigroupArray)(svgTextBoxes)(Data_Semigroup.append(Data_Semigroup.semigroupArray)(svgTransitions)(svgPlaces)));
@@ -13041,6 +13143,24 @@ var PS = {};
                               var transitionLabelsVisibilityClass = Data_Monoid.guard(Data_Monoid.monoidString)(!state.transitionLabelsVisible)("css-hide-transition-labels");
                               var placeLabelsVisibilityClass = Data_Monoid.guard(Data_Monoid.monoidString)(!state.placeLabelsVisible)("css-hide-place-labels");
                               var padding = Data_Vec3_Vec3.vec2(Data_Semiring.semiringNumber)(4.0 * View_Petrinet_Config.transitionWidth)(4.0 * View_Petrinet_Config.transitionHeight);
+                              var marking = Data_Maybe.fromMaybe(state.netInfo.net.marking)(state.overrideMarking);
+                              var netInfo = {
+                                  net: {
+                                      marking: marking,
+                                      layout: state.netInfo.net.layout,
+                                      placeLabelsDict: state.netInfo.net.placeLabelsDict,
+                                      places: state.netInfo.net.places,
+                                      transitionAuthsDict: state.netInfo.net.transitionAuthsDict,
+                                      transitionLabelsDict: state.netInfo.net.transitionLabelsDict,
+                                      transitionTypesDict: state.netInfo.net.transitionTypesDict,
+                                      transitionsDict: state.netInfo.net.transitionsDict
+                                  },
+                                  name: state.netInfo.name,
+                                  netApi: state.netInfo.netApi,
+                                  roleInfos: state.netInfo.roleInfos,
+                                  textBoxes: state.netInfo.textBoxes,
+                                  types: state.netInfo.types
+                              };
                               var layout = (function () {
                                   var autoLayout = Data_Petrinet_Representation_Layout_Bipartite.bipartite(dictOrd)(dictOrd1)(View_Petrinet_Config.bipartiteLayoutScale)(state.netInfo.net);
                                   return Data_Maybe.fromMaybe(autoLayout)(state.netInfo.net.layout);
@@ -13049,15 +13169,15 @@ var PS = {};
                               var sceneSize = Data_Semiring.add(Data_Vec3_Vec3.semiringVec3(Data_Semiring.semiringNumber))(Data_Ring.sub(Data_Vec3_Vec3.ringVec3(Data_Ring.ringNumber)(Data_Vec3_Vec3.semiringVec3(Data_Semiring.semiringNumber)))(bounds.max)(bounds.min))(padding);
                               var sceneTopLeft = Data_Ring.sub(Data_Vec3_Vec3.ringVec3(Data_Ring.ringNumber)(Data_Vec3_Vec3.semiringVec3(Data_Semiring.semiringNumber)))(bounds.min)(Data_EuclideanRing.div(Data_Vec3_Vec3.euclideanRingVec3(Data_EuclideanRing.euclideanRingNumber))(padding)(Control_Applicative.pure(Data_Vec3_Vec3.applicativeVec3)(2.0)));
                               var arcLabelsVisibilityClass = Data_Monoid.guard(Data_Monoid.monoidString)(!state.arcLabelsVisible)("css-hide-arc-labels");
-                              return Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "flex" ]) ])([ Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "w-5/6" ]) ])([ Halogen_HTML_Elements.div([ Halogen_HTML_Properties.id_(componentHtmlId), Halogen_HTML_Properties.classes([ "petrinet-component", "css-petrinet-component", Halogen_HTML_Core.ClassName(arcLabelsVisibilityClass + (" " + (transitionLabelsVisibilityClass + (" " + placeLabelsVisibilityClass)))) ]) ])([ Svg_Elements.svg([ Svg_Attributes.viewBox(Data_Vec3_Vec3["_x"](sceneTopLeft))(Data_Vec3_Vec3["_y"](sceneTopLeft))(Data_Vec3_Vec3["_x"](sceneSize))(Data_Vec3_Vec3["_y"](sceneSize)) ])(netToSVG(dictOrd)(dictShow)(dictOrd1)(dictShow1)(state.netInfo)(layout)(state.focusedPlace)(state.focusedTransition)) ]), Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "w-1/6" ]) ])((function () {
+                              return Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "flex" ]) ])([ Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "w-5/6" ]) ])([ Halogen_HTML_Elements.div([ Halogen_HTML_Properties.id_(componentHtmlId), Halogen_HTML_Properties.classes([ "petrinet-component", "css-petrinet-component", Halogen_HTML_Core.ClassName(arcLabelsVisibilityClass + (" " + (transitionLabelsVisibilityClass + (" " + placeLabelsVisibilityClass)))) ]) ])([ Svg_Elements.svg([ Svg_Attributes.viewBox(Data_Vec3_Vec3["_x"](sceneTopLeft))(Data_Vec3_Vec3["_y"](sceneTopLeft))(Data_Vec3_Vec3["_x"](sceneSize))(Data_Vec3_Vec3["_y"](sceneSize)) ])(netToSVG(dictOrd)(dictShow)(dictOrd1)(dictShow1)(netInfo)(layout)(state.focusedPlace)(state.focusedTransition)) ]), Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "w-1/6" ]) ])((function () {
                                   if (disableMarkingsAndLabelVisibilityButtons) {
                                       return [  ];
                                   };
-                                  return [ htmlMarking(dictShow)(Data_Show.showInt)(state.netInfo.net.marking), labelVisibilityButtons ];
+                                  return [ htmlMarking(dictShow)(Data_Show.showInt)(marking), labelVisibilityButtons ];
                               })()) ]), Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "w-1/6", "px-2" ]) ])([ Data_Maybe.maybe(View_Common.emptyHtml)((function () {
-                                  var $201 = View_Common.mapAction(View_Petrinet_Model.UpdatePlace.create);
-                                  return function ($202) {
-                                      return $201(View_Petrinet_PlaceEditor["form'"]($202));
+                                  var $208 = View_Common.mapAction(View_Petrinet_Model.UpdatePlace.create);
+                                  return function ($209) {
+                                      return $208(View_Petrinet_PlaceEditor["form'"]($209));
                                   };
                               })())(Control_Bind.bind(Data_Maybe.bindMaybe)(state.focusedPlace)(function (v) {
                                   return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Map_Internal.lookup(dictOrd)(v)(state.netInfo.net.placeLabelsDict))(function (v1) {
@@ -13069,10 +13189,10 @@ var PS = {};
                                       });
                                   });
                               })), Data_Maybe.maybe(View_Common.emptyHtml)((function () {
-                                  var $203 = View_Common.mapAction(View_Petrinet_Model.UpdateTransition.create);
-                                  var $204 = View_Petrinet_TransitionEditor["form'"](state.netInfo.roleInfos);
-                                  return function ($205) {
-                                      return $203($204($205));
+                                  var $210 = View_Common.mapAction(View_Petrinet_Model.UpdateTransition.create);
+                                  var $211 = View_Petrinet_TransitionEditor["form'"](state.netInfo.roleInfos);
+                                  return function ($212) {
+                                      return $210($211($212));
                                   };
                               })())(Control_Bind.bind(Data_Maybe.bindMaybe)(state.focusedTransition)(function (v) {
                                   return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Map_Internal.lookup(dictOrd1)(v)(state.netInfo.net.transitionLabelsDict))(function (v1) {
@@ -13093,8 +13213,8 @@ var PS = {};
                               "eval": Halogen_Component.mkEval({
                                   handleAction: handleAction(dictOrd1)(dictShow1),
                                   handleQuery: Halogen_Component.defaultEval.handleQuery,
-                                  receive: function ($206) {
-                                      return Data_Maybe.Just.create(View_Petrinet_Model.LoadNet.create($206));
+                                  receive: function ($213) {
+                                      return Data_Maybe.Just.create(View_Petrinet_Model.LoadNet.create($213));
                                   },
                                   initialize: Halogen_Component.defaultEval.initialize,
                                   finalize: Halogen_Component.defaultEval.finalize
