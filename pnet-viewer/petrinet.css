@@ -1,0 +1,92 @@
+.css-petrinet-component svg {
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+
+    background: #eee;
+    background-image:
+        linear-gradient(to top, pink, rgba(0,0,255,0.5)),
+        url(logo-statebox-white.svg);
+    background-image: linear-gradient(to bottom, #eee, #ddd);
+    background: #f1f5f8;
+}
+.css-petrinet-component.css-hide-arc-labels .css-arc-name-label,
+.css-petrinet-component.css-hide-place-labels .css-place-name-label,
+.css-petrinet-component.css-hide-transition-labels .css-transition-name-label {
+    display: none;
+}
+.css-place,
+.css-transition-rect {
+    stroke-width: 0.15;
+    stroke: rgb(100,100,100);
+    fill: rgb(200,200,200);
+}
+.css-place.focused {
+    fill: lightblue;
+}
+.css-transition-rect.focused {
+    fill: lightblue;
+}
+.css-place-name-label, .css-transition-name-label, .css-arc-name-label {
+    fill: rgb(100,100,100);
+    text-anchor: middle;
+}
+.css-place-label{
+    fill: rgb(100,100,100);
+}
+.css-arc-label {
+    fill: rgb(200,200,200);
+}
+.css-arc {
+    stroke-width: 0.15;
+    stroke: rgb(100,100,100);
+    fill: rgb(100,100,100);
+}
+.css-arrow {
+    stroke-width: 0.15;
+    stroke: rgb(100,100,100);
+}
+.css-arrowhead {
+    stroke: none;
+    fill: rgb(100,100,100);
+}
+.css-transition.enabled .css-transition-rect {
+    fill: rgb(220,240,220);
+    cursor: pointer;
+    cursor: hand;
+}
+.css-transition.enabled:hover .css-arc {
+    cursor: hand;
+}
+.css-transition.enabled:hover .css-arc {
+    stroke-width: 0.75;
+    transition: stroke-width 0.5s;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+.css-transition.enabled:hover .css-pre-arc {
+    stroke: rgb(240,200,220);
+}
+.css-transition.enabled:hover .css-post-arc {
+    stroke: rgb(220,240,220);
+}
+.css-token-in-place {
+    fill: rgb(100,100,100);
+}
+.css-token-animated {
+    fill: rgb(100,100,100);
+}
+.css-textbox rect {
+    /* fill: rgba(240,200,220, 0.5); */
+    fill: none;
+    stroke-width: 0.15;
+    stroke-dasharray: 1,1;
+    stroke: rgba(240,200,220, 0.7);
+    stroke: rgba(100,100,100,0.6);
+}
+.css-textbox-label {
+    fill: rgb(100,100,100);
+    fill: rgba(240,200,220, 1.0);
+    fill: rgba(100,100,100,0.6);
+}

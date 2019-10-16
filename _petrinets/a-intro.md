@@ -27,6 +27,6 @@ living in places connected to its input, and producing tokens living in places c
 
 * Places are represented by circles;
 * Tokens are represented by black dots in each circle;
-* Transitions are represented by rectangles; transitions that can fire are colored purple.
+* Transitions are represented by rectangles; transitions that can fire are colored green.
 
-The diagram is interactive, try clicking on the enabled (purple) transitions and see what happens.
+The diagram is interactive, try clicking on the enabled (green) transitions and see what happens.

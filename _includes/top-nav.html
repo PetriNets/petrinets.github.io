@@ -9,7 +9,7 @@
         <!-- Navigation. We hide it in small screens. -->
         <nav class="mdl-navigation mdl-layout--large-screen-only">
             {% for petrinet in site.petrinets %}
-            <a class="mdl-navigation__link" href="/#{{petrinet.title}}">{{petrinet.title}}</a>
+            <a class="mdl-navigation__link" href="/#{{petrinet.net.title}}">{{petrinet.title}}</a>
             {% endfor %}
         </nav>
         <div class="mdl-layout-spacer"></div>
@@ -20,7 +20,7 @@
     <span class="mdl-layout-title">Petri Nets</span>
     <nav class="mdl-navigation">
         {% for petrinet in site.petrinets %}
-        <a class="mdl-navigation__link" href="/#{{petrinet.title}}">{{petrinet.title}}</a>
+        <a class="mdl-navigation__link" href="/#{{petrinet.net.title}}">{{petrinet.title}}</a>
         {% endfor %}
     </nav>
     <a href="https://statebox.org" class="logo"><img src="/img/stbx_logo.svg" /></a>
