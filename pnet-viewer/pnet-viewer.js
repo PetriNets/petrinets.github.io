@@ -7744,18 +7744,6 @@ var PS = {};
           };
       };
   };       
-  var minMaxZero = function (dictApplicative) {
-      return function (dictBounded) {
-          return function (dictApplicative1) {
-              return function (dictBounded1) {
-                  return {
-                      min: Control_Applicative.pure(dictApplicative)(Data_Bounded.top(dictBounded)),
-                      max: Control_Applicative.pure(dictApplicative1)(Data_Bounded.bottom(dictBounded1))
-                  };
-              };
-          };
-      };
-  };
   var functorVec3 = new Data_Functor.Functor(function (f) {
       return function (m) {
           return {
@@ -7823,11 +7811,17 @@ var PS = {};
   }, function (x) {
       return vec3(x)(x)(x);
   });
+  var minMaxZero = function (dictBounded) {
+      return {
+          min: Control_Applicative.pure(applicativeVec3)(Data_Bounded.top(dictBounded)),
+          max: Control_Applicative.pure(applicativeVec3)(Data_Bounded.bottom(dictBounded))
+      };
+  };
   var bounds = function (dictBounded) {
       return function (dictOrd) {
           return function (dictFoldable) {
               return function (vecs) {
-                  return Data_Foldable.foldl(dictFoldable)(minMaxVecs(dictBounded)(dictBounded.Ord0()))(minMaxZero(applicativeVec3)(dictBounded)(applicativeVec3)(dictBounded))(vecs);
+                  return Data_Foldable.foldl(dictFoldable)(minMaxVecs(dictBounded)(dictBounded.Ord0()))(minMaxZero(dictBounded))(vecs);
               };
           };
       };
@@ -7853,9 +7847,9 @@ var PS = {};
       return new Data_EuclideanRing.EuclideanRing(function () {
           return commutativeRingVec3(dictEuclideanRing.CommutativeRing0());
       }, (function () {
-          var $92 = Data_EuclideanRing.degree(dictEuclideanRing);
-          return function ($93) {
-              return $92(_x($93));
+          var $89 = Data_EuclideanRing.degree(dictEuclideanRing);
+          return function ($90) {
+              return $89(_x($90));
           };
       })(), binOp(Data_EuclideanRing.div(dictEuclideanRing)), binOp(Data_EuclideanRing.mod(dictEuclideanRing)));
   };
@@ -8829,7 +8823,7 @@ var PS = {};
               return v.box;
           })($10));
       })(netInfo.textBoxes));
-      var layoutBounds = Data_Maybe.maybe(Data_Vec3_Vec3.minMaxZero(Data_Vec3_Vec3.applicativeVec3)(Data_Bounded.boundedNumber)(Data_Vec3_Vec3.applicativeVec3)(Data_Bounded.boundedNumber))(Data_Petrinet_Representation_Layout.bounds)(netInfo.net.layout);
+      var layoutBounds = Data_Maybe.maybe(Data_Vec3_Vec3.minMaxZero(Data_Bounded.boundedNumber))(Data_Petrinet_Representation_Layout.bounds)(netInfo.net.layout);
       return Data_Vec3_Vec3.minMax(Data_Bounded.boundedNumber)(Data_Ord.ordNumber)(layoutBounds)(textBoxesBounds);
   };
   var translateAndScale = function (factor) {
@@ -12583,7 +12577,7 @@ var PS = {};
           if (mx instanceof Data_Maybe.Just) {
               return Data_Maybe.Nothing.value;
           };
-          throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 544, column 20 - line 546, column 21): " + [ mx.constructor.name ]);
+          throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 543, column 20 - line 545, column 21): " + [ mx.constructor.name ]);
       };
   };
   var svgPath = function (p) {
@@ -12621,15 +12615,11 @@ var PS = {};
                           var tokenAnimatedClass = function (x) {
                               return x + "_token_animated";
                           };
-                          var svgTransitionRect = function (dictShow2) {
-                              return function (t) {
-                                  return Svg_Elements.rect([ Svg_Attributes.class_("css-transition-rect" + Data_Monoid.guard(Data_Monoid.monoidString)(t.isFocused)(" focused")), Svg_Attributes.width(View_Petrinet_Config.transitionWidth), Svg_Attributes.height(View_Petrinet_Config.transitionHeight), Svg_Attributes.x(Data_Vec3_Vec3["_x"](t.point) - View_Petrinet_Config.transitionWidth / 2.0), Svg_Attributes.y(Data_Vec3_Vec3["_y"](t.point) - View_Petrinet_Config.transitionHeight / 2.0) ]);
-                              };
+                          var svgTransitionRect = function (t) {
+                              return Svg_Elements.rect([ Svg_Attributes.class_("css-transition-rect" + Data_Monoid.guard(Data_Monoid.monoidString)(t.isFocused)(" focused")), Svg_Attributes.width(View_Petrinet_Config.transitionWidth), Svg_Attributes.height(View_Petrinet_Config.transitionHeight), Svg_Attributes.x(Data_Vec3_Vec3["_x"](t.point) - View_Petrinet_Config.transitionWidth / 2.0), Svg_Attributes.y(Data_Vec3_Vec3["_y"](t.point) - View_Petrinet_Config.transitionHeight / 2.0) ]);
                           };
-                          var svgTransitionLabel = function (dictShow2) {
-                              return function (t) {
-                                  return Svg_Elements.text([ Svg_Attributes.class_("css-transition-name-label"), Svg_Attributes.x(Data_Vec3_Vec3["_x"](t.point)), Svg_Attributes.y((Data_Vec3_Vec3["_y"](t.point) - 0.65 * View_Petrinet_Config.transitionHeight) + 0.25 * View_Petrinet_Config.fontSize), Svg_Attributes.font_size(Svg_Attributes.FontSizeLength.create(new Svg_Attributes.Em(View_Petrinet_Config.fontSize))) ])([ Halogen_HTML_Core.text(t.label) ]);
-                              };
+                          var svgTransitionLabel = function (t) {
+                              return Svg_Elements.text([ Svg_Attributes.class_("css-transition-name-label"), Svg_Attributes.x(Data_Vec3_Vec3["_x"](t.point)), Svg_Attributes.y(Data_Vec3_Vec3["_y"](t.point) - 0.5 * View_Petrinet_Config.transitionHeight - 7.0 * View_Petrinet_Config.fontSize), Svg_Attributes.font_size(Svg_Attributes.FontSizeLength.create(new Svg_Attributes.Em(View_Petrinet_Config.fontSize))) ])([ Halogen_HTML_Core.text(t.label) ]);
                           };
                           var svgTextBox = function (tb) {
                               var v = Data_Newtype.unwrap(Data_Vec3_Box.newtypeBox)(tb.box);
@@ -12640,85 +12630,67 @@ var PS = {};
                               var w = Data_Vec3_Vec3["_x"](boxSize);
                               return Svg_Elements.g([ Svg_Attributes.class_("css-textbox") ])([ Svg_Elements.rect([ Svg_Attributes.x(x), Svg_Attributes.y(y), Svg_Attributes.width(w), Svg_Attributes.height(h) ]), Svg_Elements.text([ Svg_Attributes.class_("css-textbox-label"), Svg_Attributes.x(x + 15.0 * View_Petrinet_Config.fontSize), Svg_Attributes.y(y + 20.0 * View_Petrinet_Config.fontSize), Svg_Attributes.font_size(Svg_Attributes.FontSizeLength.create(new Svg_Attributes.Em(View_Petrinet_Config.fontSize))) ])([ Halogen_HTML_Core.text(tb.text) ]) ]);
                           };
-                          var prefixTransition = function (dictShow2) {
-                              return function (tid) {
-                                  return "t" + Data_Show.show(dictShow2)(tid);
-                              };
+                          var prefixTransition = function (tid) {
+                              return "t" + Data_Show.show(dictShow1)(tid);
                           };
-                          var prefixPlace = function (dictShow2) {
-                              return function (pid) {
-                                  return "p" + Data_Show.show(dictShow2)(pid);
-                              };
+                          var prefixPlace = function (pid) {
+                              return "p" + Data_Show.show(dictShow)(pid);
                           };
                           var netPrefix = Data_Foldable.foldMap(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(function (v) {
                               return v + "_";
                           })(htmlIdPrefixMaybe);
-                          var postArcId = function (dictShow2) {
-                              return function (dictShow3) {
-                                  return function (tid) {
-                                      return function (place) {
-                                          return netPrefix + ("arc_" + (prefixTransition(dictShow3)(tid) + ("_" + prefixPlace(dictShow2)(place))));
+                          var postArcId = function (tid) {
+                              return function (place) {
+                                  return netPrefix + ("arc_" + (prefixTransition(tid) + ("_" + prefixPlace(place))));
+                              };
+                          };
+                          var preArcId = function (tid) {
+                              return function (place) {
+                                  return netPrefix + ("arc_" + (prefixPlace(place) + ("_" + prefixTransition(tid))));
+                              };
+                          };
+                          var mkTransitionIdStr = (function () {
+                              var $174 = Data_Semigroup.append(Data_Semigroup.semigroupString)(netPrefix);
+                              return function ($175) {
+                                  return $174(prefixTransition($175));
+                              };
+                          })();
+                          var mkPlaceIdStr = (function () {
+                              var $176 = Data_Semigroup.append(Data_Semigroup.semigroupString)(netPrefix);
+                              return function ($177) {
+                                  return $176(prefixPlace($177));
+                              };
+                          })();
+                          var svgPlace = function (v) {
+                              var svgTokens = (function () {
+                                  var r = function (v1) {
+                                      if (v1 === 2) {
+                                          return 0.33;
                                       };
+                                      if (v1 === 3) {
+                                          return 0.4;
+                                      };
+                                      return 0.5;
                                   };
-                              };
-                          };
-                          var preArcId = function (dictShow2) {
-                              return function (dictShow3) {
-                                  return function (tid) {
-                                      return function (place) {
-                                          return netPrefix + ("arc_" + (prefixPlace(dictShow2)(place) + ("_" + prefixTransition(dictShow3)(tid))));
-                                      };
+                                  var $68 = v.tokens === 0;
+                                  if ($68) {
+                                      return Halogen_HTML_Core.text("");
                                   };
-                              };
-                          };
-                          var mkTransitionIdStr = function (dictShow2) {
-                              var $197 = Data_Semigroup.append(Data_Semigroup.semigroupString)(netPrefix);
-                              var $198 = prefixTransition(dictShow2);
-                              return function ($199) {
-                                  return $197($198($199));
-                              };
-                          };
-                          var mkPlaceIdStr = function (dictShow2) {
-                              var $200 = Data_Semigroup.append(Data_Semigroup.semigroupString)(netPrefix);
-                              var $201 = prefixPlace(dictShow2);
-                              return function ($202) {
-                                  return $200($201($202));
-                              };
-                          };
-                          var svgPlace = function (dictShow2) {
-                              return function (v) {
-                                  var svgTokens = function (tokens1) {
-                                      return function (point1) {
-                                          var r = function (v1) {
-                                              if (v1 === 2) {
-                                                  return 0.33;
-                                              };
-                                              if (v1 === 3) {
-                                                  return 0.4;
-                                              };
-                                              return 0.5;
-                                          };
-                                          var $91 = tokens1 === 0;
-                                          if ($91) {
-                                              return Halogen_HTML_Core.text("");
-                                          };
-                                          var $92 = tokens1 === 1 || tokens1 > 5;
-                                          if ($92) {
-                                              return Svg_Elements.circle([ Svg_Attributes.r(View_Petrinet_Config.tokenRadius), Svg_Attributes.cx(Data_Vec3_Vec3["_x"](point1)), Svg_Attributes.cy(Data_Vec3_Vec3["_y"](point1)), Svg_Attributes.class_("css-token-in-place") ]);
-                                          };
-                                          return Svg_Elements.g([  ])(Data_Functor.mapFlipped(Data_Functor.functorArray)(Data_Array.range(1)(tokens1))(function (i) {
-                                              return Svg_Elements.circle([ Svg_Attributes.r(View_Petrinet_Config.tokenRadius), Svg_Attributes.cx(Data_Vec3_Vec3["_x"](point1) + $$Math.cos((Data_Int.toNumber(i) / Data_Int.toNumber(tokens1)) * 2.0 * $$Math.pi) * View_Petrinet_Config.placeRadius * r(tokens1)), Svg_Attributes.cy(Data_Vec3_Vec3["_y"](point1) + $$Math.sin((Data_Int.toNumber(i) / Data_Int.toNumber(tokens1)) * 2.0 * $$Math.pi) * View_Petrinet_Config.placeRadius * r(tokens1)), Svg_Attributes.class_("css-token-in-place") ]);
-                                          }));
-                                      };
+                                  var $69 = v.tokens === 1 || v.tokens > 5;
+                                  if ($69) {
+                                      return Svg_Elements.circle([ Svg_Attributes.r(View_Petrinet_Config.tokenRadius), Svg_Attributes.cx(Data_Vec3_Vec3["_x"](v.point)), Svg_Attributes.cy(Data_Vec3_Vec3["_y"](v.point)), Svg_Attributes.class_("css-token-in-place") ]);
                                   };
-                                  return Svg_Elements.g([ Svg_Attributes.id(mkPlaceIdStr(dictShow2)(v.id)) ])([ Svg_Elements.title([  ])([ Halogen_HTML_Core.text(v.label) ]), Svg_Elements.circle([ Svg_Attributes.class_("css-place" + Data_Monoid.guard(Data_Monoid.monoidString)(v.isFocused)(" focused")), Svg_Attributes.r(View_Petrinet_Config.placeRadius), Svg_Attributes.cx(Data_Vec3_Vec3["_x"](v.point)), Svg_Attributes.cy(Data_Vec3_Vec3["_y"](v.point)) ]), svgTokens(v.tokens)(v.point), Svg_Elements.text([ Svg_Attributes.class_("css-place-name-label"), Svg_Attributes.x(Data_Vec3_Vec3["_x"](v.point)), Svg_Attributes.y(Data_Vec3_Vec3["_y"](v.point) + 2.0 * View_Petrinet_Config.placeRadius + 0.25 * View_Petrinet_Config.fontSize), Svg_Attributes.font_size(Svg_Attributes.FontSizeLength.create(new Svg_Attributes.Em(View_Petrinet_Config.fontSize))) ])([ Halogen_HTML_Core.text(v.label) ]), Svg_Elements.text([ Svg_Attributes.class_("css-place-label"), Svg_Attributes.x(Data_Vec3_Vec3["_x"](v.point) + View_Petrinet_Config.tokenPadding), Svg_Attributes.y(Data_Vec3_Vec3["_y"](v.point) - View_Petrinet_Config.tokenPadding), Svg_Attributes.font_size(Svg_Attributes.FontSizeLength.create(new Svg_Attributes.Em(View_Petrinet_Config.fontSize))) ])([ Halogen_HTML_Core.text((function () {
-                                      var $93 = v.tokens < 6;
-                                      if ($93) {
-                                          return "";
-                                      };
-                                      return Data_Show.show(Data_Show.showInt)(v.tokens);
-                                  })()) ]) ]);
-                              };
+                                  return Svg_Elements.g([  ])(Data_Functor.mapFlipped(Data_Functor.functorArray)(Data_Array.range(1)(v.tokens))(function (i) {
+                                      return Svg_Elements.circle([ Svg_Attributes.r(View_Petrinet_Config.tokenRadius), Svg_Attributes.cx(Data_Vec3_Vec3["_x"](v.point) + $$Math.cos((Data_Int.toNumber(i) / Data_Int.toNumber(v.tokens)) * 2.0 * $$Math.pi) * View_Petrinet_Config.placeRadius * r(v.tokens)), Svg_Attributes.cy(Data_Vec3_Vec3["_y"](v.point) + $$Math.sin((Data_Int.toNumber(i) / Data_Int.toNumber(v.tokens)) * 2.0 * $$Math.pi) * View_Petrinet_Config.placeRadius * r(v.tokens)), Svg_Attributes.class_("css-token-in-place") ]);
+                                  }));
+                              })();
+                              return Svg_Elements.g([ Svg_Attributes.id(mkPlaceIdStr(v.id)) ])([ Svg_Elements.title([  ])([ Halogen_HTML_Core.text(v.label) ]), Svg_Elements.circle([ Svg_Attributes.class_("css-place" + Data_Monoid.guard(Data_Monoid.monoidString)(v.isFocused)(" focused")), Svg_Attributes.r(View_Petrinet_Config.placeRadius), Svg_Attributes.cx(Data_Vec3_Vec3["_x"](v.point)), Svg_Attributes.cy(Data_Vec3_Vec3["_y"](v.point)) ]), svgTokens, Svg_Elements.text([ Svg_Attributes.class_("css-place-name-label"), Svg_Attributes.x(Data_Vec3_Vec3["_x"](v.point)), Svg_Attributes.y(Data_Vec3_Vec3["_y"](v.point) + View_Petrinet_Config.placeRadius + 16.0 * View_Petrinet_Config.fontSize), Svg_Attributes.font_size(Svg_Attributes.FontSizeLength.create(new Svg_Attributes.Em(View_Petrinet_Config.fontSize))) ])([ Halogen_HTML_Core.text(v.label) ]), Svg_Elements.text([ Svg_Attributes.class_("css-place-label"), Svg_Attributes.x(Data_Vec3_Vec3["_x"](v.point) + View_Petrinet_Config.tokenPadding), Svg_Attributes.y(Data_Vec3_Vec3["_y"](v.point) - View_Petrinet_Config.tokenPadding), Svg_Attributes.font_size(Svg_Attributes.FontSizeLength.create(new Svg_Attributes.Em(View_Petrinet_Config.fontSize))) ])([ Halogen_HTML_Core.text((function () {
+                                  var $70 = v.tokens < 6;
+                                  if ($70) {
+                                      return "";
+                                  };
+                                  return Data_Show.show(Data_Show.showInt)(v.tokens);
+                              })()) ]) ]);
                           };
                           var initialState = function (netInfo) {
                               var scaledNetInfo = View_Petrinet_Model.translateAndScale(View_Petrinet_Config.netScale)({
@@ -12741,400 +12713,372 @@ var PS = {};
                               };
                           };
                           var componentHtmlId = netPrefix + Data_Newtype.un(Halogen_HTML_Core.newtypeClassName)(Halogen_HTML_Core.ClassName)("petrinet-component");
-                          var arcAnimationClass = function (dictShow2) {
-                              return function (tid) {
-                                  return function (isPost) {
-                                      var prefix = function (v) {
-                                          if (v) {
-                                              return "arc_post_";
-                                          };
-                                          if (!v) {
-                                              return "arc_pre_";
-                                          };
-                                          throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 487, column 9 - line 487, column 34): " + [ v.constructor.name ]);
+                          var arcAnimationClass = function (tid) {
+                              return function (isPost) {
+                                  var prefix = function (v) {
+                                      if (v) {
+                                          return "arc_post_";
                                       };
-                                      return tokenAnimatedClass(netPrefix + (prefix(isPost) + prefixTransition(dictShow2)(tid)));
+                                      if (!v) {
+                                          return "arc_pre_";
+                                      };
+                                      throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 486, column 9 - line 486, column 34): " + [ v.constructor.name ]);
                                   };
+                                  return tokenAnimatedClass(netPrefix + (prefix(isPost) + prefixTransition(tid)));
                               };
                           };
-                          var handleAction = function (dictOrd2) {
-                              return function (dictShow2) {
-                                  return function (v) {
-                                      if (v instanceof View_Petrinet_Model.LoadNet) {
-                                          var scaledNetInfo = View_Petrinet_Model.translateAndScale(View_Petrinet_Config.netScale)({
-                                              name: v.value0.name,
-                                              net: v.value0.net,
-                                              netApi: Data_Petrinet_Representation_Dict.mkNetApiF(dictOrd)(dictOrd2)(Data_Semiring.semiringInt)(v.value0.net),
-                                              textBoxes: v.value0.textBoxes,
-                                              roleInfos: v.value0.roleInfos,
-                                              types: v.value0.types
-                                          });
-                                          return Control_Monad_State_Class.modify_(Halogen_Query_HalogenM.monadStateHalogenM)(function (state) {
-                                              var $101 = {};
-                                              for (var $102 in state) {
-                                                  if ({}.hasOwnProperty.call(state, $102)) {
-                                                      $101[$102] = state[$102];
+                          var handleAction = function (v) {
+                              if (v instanceof View_Petrinet_Model.LoadNet) {
+                                  var scaledNetInfo = View_Petrinet_Model.translateAndScale(View_Petrinet_Config.netScale)({
+                                      name: v.value0.name,
+                                      net: v.value0.net,
+                                      netApi: Data_Petrinet_Representation_Dict.mkNetApiF(dictOrd)(dictOrd1)(Data_Semiring.semiringInt)(v.value0.net),
+                                      textBoxes: v.value0.textBoxes,
+                                      roleInfos: v.value0.roleInfos,
+                                      types: v.value0.types
+                                  });
+                                  return Control_Monad_State_Class.modify_(Halogen_Query_HalogenM.monadStateHalogenM)(function (state) {
+                                      var $78 = {};
+                                      for (var $79 in state) {
+                                          if ({}.hasOwnProperty.call(state, $79)) {
+                                              $78[$79] = state[$79];
+                                          };
+                                      };
+                                      $78.netInfo = scaledNetInfo;
+                                      return $78;
+                                  });
+                              };
+                              if (v instanceof View_Petrinet_Model.FocusPlace) {
+                                  return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v1) {
+                                      var focusedPlace$prime = toggleMaybe(v.value0)(v1.focusedPlace);
+                                      return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
+                                          var $83 = {};
+                                          for (var $84 in v1) {
+                                              if ({}.hasOwnProperty.call(v1, $84)) {
+                                                  $83[$84] = v1[$84];
+                                              };
+                                          };
+                                          $83.focusedPlace = focusedPlace$prime;
+                                          $83.msg = Data_Maybe.maybe("Focused")(Data_Function["const"]("Unfocused"))(v1.focusedPlace) + (" place " + (Data_Show.show(dictShow)(v.value0) + (" (" + (Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd)(v.value0)(v1.netInfo.net.placeLabelsDict)) + ")."))));
+                                          return $83;
+                                      })());
+                                  });
+                              };
+                              if (v instanceof View_Petrinet_Model.UpdatePlace) {
+                                  return Control_Monad_State_Class.modify_(Halogen_Query_HalogenM.monadStateHalogenM)(function (state) {
+                                      var $93 = {};
+                                      for (var $94 in state) {
+                                          if ({}.hasOwnProperty.call(state, $94)) {
+                                              $93[$94] = state[$94];
+                                          };
+                                      };
+                                      $93.netInfo = (function () {
+                                          var $90 = {};
+                                          for (var $91 in state.netInfo) {
+                                              if ({}.hasOwnProperty.call(state.netInfo, $91)) {
+                                                  $90[$91] = state["netInfo"][$91];
+                                              };
+                                          };
+                                          $90.net = (function () {
+                                              var $87 = {};
+                                              for (var $88 in state.netInfo.net) {
+                                                  if ({}.hasOwnProperty.call(state.netInfo.net, $88)) {
+                                                      $87[$88] = state["netInfo"]["net"][$88];
                                                   };
                                               };
-                                              $101.netInfo = scaledNetInfo;
-                                              return $101;
-                                          });
+                                              $87.placeLabelsDict = Data_Map_Internal.insert(dictOrd)(v.value0.value0)(v.value0.value1)(state.netInfo.net.placeLabelsDict);
+                                              return $87;
+                                          })();
+                                          return $90;
+                                      })();
+                                      $93.msg = "Updated place " + (Data_Show.show(dictShow)(v.value0.value0) + ".");
+                                      return $93;
+                                  });
+                              };
+                              if (v instanceof View_Petrinet_Model.UpdateTransition && v.value0 instanceof View_Petrinet_Model.UpdateTransitionName) {
+                                  return Control_Monad_State_Class.modify_(Halogen_Query_HalogenM.monadStateHalogenM)(function (state) {
+                                      var $105 = {};
+                                      for (var $106 in state) {
+                                          if ({}.hasOwnProperty.call(state, $106)) {
+                                              $105[$106] = state[$106];
+                                          };
                                       };
-                                      if (v instanceof View_Petrinet_Model.FocusPlace) {
-                                          return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v1) {
-                                              var focusedPlace$prime = toggleMaybe(v.value0)(v1.focusedPlace);
-                                              return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
-                                                  var $106 = {};
-                                                  for (var $107 in v1) {
-                                                      if ({}.hasOwnProperty.call(v1, $107)) {
-                                                          $106[$107] = v1[$107];
-                                                      };
-                                                  };
-                                                  $106.focusedPlace = focusedPlace$prime;
-                                                  $106.msg = Data_Maybe.maybe("Focused")(Data_Function["const"]("Unfocused"))(v1.focusedPlace) + (" place " + (Data_Show.show(dictShow)(v.value0) + (" (" + (Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd)(v.value0)(v1.netInfo.net.placeLabelsDict)) + ")."))));
-                                                  return $106;
-                                              })());
-                                          });
-                                      };
-                                      if (v instanceof View_Petrinet_Model.UpdatePlace) {
-                                          return Control_Monad_State_Class.modify_(Halogen_Query_HalogenM.monadStateHalogenM)(function (state) {
-                                              var $116 = {};
-                                              for (var $117 in state) {
-                                                  if ({}.hasOwnProperty.call(state, $117)) {
-                                                      $116[$117] = state[$117];
+                                      $105.netInfo = (function () {
+                                          var $102 = {};
+                                          for (var $103 in state.netInfo) {
+                                              if ({}.hasOwnProperty.call(state.netInfo, $103)) {
+                                                  $102[$103] = state["netInfo"][$103];
+                                              };
+                                          };
+                                          $102.net = (function () {
+                                              var $99 = {};
+                                              for (var $100 in state.netInfo.net) {
+                                                  if ({}.hasOwnProperty.call(state.netInfo.net, $100)) {
+                                                      $99[$100] = state["netInfo"]["net"][$100];
                                                   };
                                               };
-                                              $116.netInfo = (function () {
-                                                  var $113 = {};
-                                                  for (var $114 in state.netInfo) {
-                                                      if ({}.hasOwnProperty.call(state.netInfo, $114)) {
-                                                          $113[$114] = state["netInfo"][$114];
+                                              $99.transitionLabelsDict = Data_Map_Internal.insert(dictOrd1)(v.value0.value0)(v.value0.value1)(state.netInfo.net.transitionLabelsDict);
+                                              return $99;
+                                          })();
+                                          return $102;
+                                      })();
+                                      $105.msg = "Updated transition " + (Data_Show.show(dictShow1)(v.value0.value0) + ".");
+                                      return $105;
+                                  });
+                              };
+                              if (v instanceof View_Petrinet_Model.UpdateTransition && v.value0 instanceof View_Petrinet_Model.UpdateTransitionType) {
+                                  return Control_Monad_State_Class.modify_(Halogen_Query_HalogenM.monadStateHalogenM)(function (state) {
+                                      var $117 = {};
+                                      for (var $118 in state) {
+                                          if ({}.hasOwnProperty.call(state, $118)) {
+                                              $117[$118] = state[$118];
+                                          };
+                                      };
+                                      $117.netInfo = (function () {
+                                          var $114 = {};
+                                          for (var $115 in state.netInfo) {
+                                              if ({}.hasOwnProperty.call(state.netInfo, $115)) {
+                                                  $114[$115] = state["netInfo"][$115];
+                                              };
+                                          };
+                                          $114.net = (function () {
+                                              var $111 = {};
+                                              for (var $112 in state.netInfo.net) {
+                                                  if ({}.hasOwnProperty.call(state.netInfo.net, $112)) {
+                                                      $111[$112] = state["netInfo"]["net"][$112];
+                                                  };
+                                              };
+                                              $111.transitionTypesDict = Data_Map_Internal.insert(dictOrd1)(v.value0.value0)(v.value0.value1)(state.netInfo.net.transitionTypesDict);
+                                              return $111;
+                                          })();
+                                          return $114;
+                                      })();
+                                      $117.msg = "Updated transition " + (Data_Show.show(dictShow1)(v.value0.value0) + ".");
+                                      return $117;
+                                  });
+                              };
+                              if (v instanceof View_Petrinet_Model.FocusTransition) {
+                                  return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v1) {
+                                      var focusedTransition$prime = toggleMaybe(v.value0)(v1.focusedTransition);
+                                      return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
+                                          var $124 = {};
+                                          for (var $125 in v1) {
+                                              if ({}.hasOwnProperty.call(v1, $125)) {
+                                                  $124[$125] = v1[$125];
+                                              };
+                                          };
+                                          $124.focusedTransition = focusedTransition$prime;
+                                          $124.msg = Data_Maybe.maybe("Focused")(Data_Function["const"]("Unfocused"))(v1.focusedTransition) + (" transition " + (Data_Show.show(dictShow1)(v.value0) + (" (" + (Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd1)(v.value0)(v1.netInfo.net.transitionLabelsDict)) + ")."))));
+                                          return $124;
+                                      })());
+                                  });
+                              };
+                              if (v instanceof View_Petrinet_Model.FireTransition) {
+                                  return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v1) {
+                                      return Data_Maybe.maybe(Control_Applicative.pure(Halogen_Query_HalogenM.applicativeHalogenM)(Data_Unit.unit))(function (t) {
+                                          var marking$prime = Data_Semigroup.append(Data_Bag.semigroupBagF(dictOrd)(Data_Monoid_Additive.semigroupAdditive(Data_Semiring.semiringInt)))(Data_Petrinet_Representation_Dict.preMarking(dictOrd)(Data_Bag.groupBagF(Data_Bag.monoidBagF(Data_Bag.semigroupBagF(dictOrd)(Data_Monoid_Additive.semigroupAdditive(Data_Semiring.semiringInt))))(Data_Group.groupAdditive(Data_Ring.ringInt)))(t))(v1.netInfo.net.marking);
+                                          var net$prime = Data_Petrinet_Representation_Dict.fire(dictOrd)(Data_Semiring.semiringInt)(Data_Bag.groupBagF(Data_Bag.monoidBagF(Data_Bag.semigroupBagF(dictOrd)(Data_Monoid_Additive.semigroupAdditive(Data_Semiring.semiringInt))))(Data_Group.groupAdditive(Data_Ring.ringInt)))(v1.netInfo.net)(t);
+                                          return Control_Bind.discard(Control_Bind.discardUnit)(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
+                                              var $132 = {};
+                                              for (var $133 in v1) {
+                                                  if ({}.hasOwnProperty.call(v1, $133)) {
+                                                      $132[$133] = v1[$133];
+                                                  };
+                                              };
+                                              $132.netInfo = (function () {
+                                                  var $129 = {};
+                                                  for (var $130 in v1.netInfo) {
+                                                      if ({}.hasOwnProperty.call(v1.netInfo, $130)) {
+                                                          $129[$130] = v1["netInfo"][$130];
                                                       };
                                                   };
-                                                  $113.net = (function () {
-                                                      var $110 = {};
-                                                      for (var $111 in state.netInfo.net) {
-                                                          if ({}.hasOwnProperty.call(state.netInfo.net, $111)) {
-                                                              $110[$111] = state["netInfo"]["net"][$111];
-                                                          };
-                                                      };
-                                                      $110.placeLabelsDict = Data_Map_Internal.insert(dictOrd)(v.value0.value0)(v.value0.value1)(state.netInfo.net.placeLabelsDict);
-                                                      return $110;
-                                                  })();
-                                                  return $113;
+                                                  $129.net = net$prime;
+                                                  return $129;
                                               })();
-                                              $116.msg = "Updated place " + (Data_Show.show(dictShow)(v.value0.value0) + ".");
-                                              return $116;
-                                          });
-                                      };
-                                      if (v instanceof View_Petrinet_Model.UpdateTransition && v.value0 instanceof View_Petrinet_Model.UpdateTransitionName) {
-                                          return Control_Monad_State_Class.modify_(Halogen_Query_HalogenM.monadStateHalogenM)(function (state) {
-                                              var $128 = {};
-                                              for (var $129 in state) {
-                                                  if ({}.hasOwnProperty.call(state, $129)) {
-                                                      $128[$129] = state[$129];
-                                                  };
-                                              };
-                                              $128.netInfo = (function () {
-                                                  var $125 = {};
-                                                  for (var $126 in state.netInfo) {
-                                                      if ({}.hasOwnProperty.call(state.netInfo, $126)) {
-                                                          $125[$126] = state["netInfo"][$126];
-                                                      };
-                                                  };
-                                                  $125.net = (function () {
-                                                      var $122 = {};
-                                                      for (var $123 in state.netInfo.net) {
-                                                          if ({}.hasOwnProperty.call(state.netInfo.net, $123)) {
-                                                              $122[$123] = state["netInfo"]["net"][$123];
-                                                          };
-                                                      };
-                                                      $122.transitionLabelsDict = Data_Map_Internal.insert(dictOrd2)(v.value0.value0)(v.value0.value1)(state.netInfo.net.transitionLabelsDict);
-                                                      return $122;
-                                                  })();
-                                                  return $125;
-                                              })();
-                                              $128.msg = "Updated transition " + (Data_Show.show(dictShow2)(v.value0.value0) + ".");
-                                              return $128;
-                                          });
-                                      };
-                                      if (v instanceof View_Petrinet_Model.UpdateTransition && v.value0 instanceof View_Petrinet_Model.UpdateTransitionType) {
-                                          return Control_Monad_State_Class.modify_(Halogen_Query_HalogenM.monadStateHalogenM)(function (state) {
-                                              var $140 = {};
-                                              for (var $141 in state) {
-                                                  if ({}.hasOwnProperty.call(state, $141)) {
-                                                      $140[$141] = state[$141];
-                                                  };
-                                              };
-                                              $140.netInfo = (function () {
-                                                  var $137 = {};
-                                                  for (var $138 in state.netInfo) {
-                                                      if ({}.hasOwnProperty.call(state.netInfo, $138)) {
-                                                          $137[$138] = state["netInfo"][$138];
-                                                      };
-                                                  };
-                                                  $137.net = (function () {
-                                                      var $134 = {};
-                                                      for (var $135 in state.netInfo.net) {
-                                                          if ({}.hasOwnProperty.call(state.netInfo.net, $135)) {
-                                                              $134[$135] = state["netInfo"]["net"][$135];
-                                                          };
-                                                      };
-                                                      $134.transitionTypesDict = Data_Map_Internal.insert(dictOrd2)(v.value0.value0)(v.value0.value1)(state.netInfo.net.transitionTypesDict);
-                                                      return $134;
-                                                  })();
-                                                  return $137;
-                                              })();
-                                              $140.msg = "Updated transition " + (Data_Show.show(dictShow2)(v.value0.value0) + ".");
-                                              return $140;
-                                          });
-                                      };
-                                      if (v instanceof View_Petrinet_Model.FocusTransition) {
-                                          return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v1) {
-                                              var focusedTransition$prime = toggleMaybe(v.value0)(v1.focusedTransition);
-                                              return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
-                                                  var $147 = {};
-                                                  for (var $148 in v1) {
-                                                      if ({}.hasOwnProperty.call(v1, $148)) {
-                                                          $147[$148] = v1[$148];
-                                                      };
-                                                  };
-                                                  $147.focusedTransition = focusedTransition$prime;
-                                                  $147.msg = Data_Maybe.maybe("Focused")(Data_Function["const"]("Unfocused"))(v1.focusedTransition) + (" transition " + (Data_Show.show(dictShow2)(v.value0) + (" (" + (Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd2)(v.value0)(v1.netInfo.net.transitionLabelsDict)) + ")."))));
-                                                  return $147;
-                                              })());
-                                          });
-                                      };
-                                      if (v instanceof View_Petrinet_Model.FireTransition) {
-                                          return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v1) {
-                                              return Data_Maybe.maybe(Control_Applicative.pure(Halogen_Query_HalogenM.applicativeHalogenM)(Data_Unit.unit))(function (t) {
-                                                  var marking$prime = Data_Semigroup.append(Data_Bag.semigroupBagF(dictOrd)(Data_Monoid_Additive.semigroupAdditive(Data_Semiring.semiringInt)))(Data_Petrinet_Representation_Dict.preMarking(dictOrd)(Data_Bag.groupBagF(Data_Bag.monoidBagF(Data_Bag.semigroupBagF(dictOrd)(Data_Monoid_Additive.semigroupAdditive(Data_Semiring.semiringInt))))(Data_Group.groupAdditive(Data_Ring.ringInt)))(t))(v1.netInfo.net.marking);
-                                                  var net$prime = Data_Petrinet_Representation_Dict.fire(dictOrd)(Data_Semiring.semiringInt)(Data_Bag.groupBagF(Data_Bag.monoidBagF(Data_Bag.semigroupBagF(dictOrd)(Data_Monoid_Additive.semigroupAdditive(Data_Semiring.semiringInt))))(Data_Group.groupAdditive(Data_Ring.ringInt)))(v1.netInfo.net)(t);
-                                                  return Control_Bind.discard(Control_Bind.discardUnit)(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
-                                                      var $155 = {};
-                                                      for (var $156 in v1) {
-                                                          if ({}.hasOwnProperty.call(v1, $156)) {
-                                                              $155[$156] = v1[$156];
-                                                          };
-                                                      };
-                                                      $155.netInfo = (function () {
-                                                          var $152 = {};
-                                                          for (var $153 in v1.netInfo) {
-                                                              if ({}.hasOwnProperty.call(v1.netInfo, $153)) {
-                                                                  $152[$153] = v1["netInfo"][$153];
-                                                              };
-                                                          };
-                                                          $152.net = net$prime;
-                                                          return $152;
-                                                      })();
-                                                      $155.overrideMarking = new Data_Maybe.Just(marking$prime);
-                                                      $155.msg = "Firing transition " + Data_Show.show(dictShow2)(v.value0);
-                                                      return $155;
-                                                  })()))(function () {
-                                                      return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Svg_Util.beginElements("#" + (componentHtmlId + (" ." + arcAnimationClass(dictShow2)(v.value0)(false))))))(function (v2) {
-                                                          return Control_Bind.discard(Control_Bind.discardUnit)(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Data_Monoid.guard(Effect_Aff.monoidAff(Data_Monoid.monoidUnit))(v2 > 0)(Effect_Aff.delay(Data_Time_Duration.Milliseconds(View_Petrinet_Config.arcAnimationDurationSec * 1000.0)))))(function () {
-                                                              return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Svg_Util.beginElements("#" + (componentHtmlId + (" ." + arcAnimationClass(dictShow2)(v.value0)(true))))))(function (v3) {
-                                                                  return Control_Bind.discard(Control_Bind.discardUnit)(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Data_Monoid.guard(Effect_Aff.monoidAff(Data_Monoid.monoidUnit))(v3 > 0)(Effect_Aff.delay(Data_Time_Duration.Milliseconds(View_Petrinet_Config.arcAnimationDurationSec * 1000.0)))))(function () {
-                                                                      return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v4) {
-                                                                          return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
-                                                                              var $161 = {};
-                                                                              for (var $162 in v4) {
-                                                                                  if ({}.hasOwnProperty.call(v4, $162)) {
-                                                                                      $161[$162] = v4[$162];
-                                                                                  };
-                                                                              };
-                                                                              $161.overrideMarking = Data_Maybe.Nothing.value;
-                                                                              $161.msg = "Fired transition " + (Data_Show.show(dictShow2)(v.value0) + (" (" + (Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd2)(v.value0)(net$prime.transitionLabelsDict)) + ").")));
-                                                                              return $161;
-                                                                          })());
-                                                                      });
-                                                                  });
+                                              $132.overrideMarking = new Data_Maybe.Just(marking$prime);
+                                              $132.msg = "Firing transition " + Data_Show.show(dictShow1)(v.value0);
+                                              return $132;
+                                          })()))(function () {
+                                              return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Svg_Util.beginElements("#" + (componentHtmlId + (" ." + arcAnimationClass(v.value0)(false))))))(function (v2) {
+                                                  return Control_Bind.discard(Control_Bind.discardUnit)(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Data_Monoid.guard(Effect_Aff.monoidAff(Data_Monoid.monoidUnit))(v2 > 0)(Effect_Aff.delay(Data_Time_Duration.Milliseconds(View_Petrinet_Config.arcAnimationDurationSec * 1000.0)))))(function () {
+                                                      return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Svg_Util.beginElements("#" + (componentHtmlId + (" ." + arcAnimationClass(v.value0)(true))))))(function (v3) {
+                                                          return Control_Bind.discard(Control_Bind.discardUnit)(Halogen_Query_HalogenM.bindHalogenM)(Effect_Aff_Class.liftAff(Halogen_Query_HalogenM.monadAffHalogenM(dictMonadAff))(Data_Monoid.guard(Effect_Aff.monoidAff(Data_Monoid.monoidUnit))(v3 > 0)(Effect_Aff.delay(Data_Time_Duration.Milliseconds(View_Petrinet_Config.arcAnimationDurationSec * 1000.0)))))(function () {
+                                                              return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v4) {
+                                                                  return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
+                                                                      var $138 = {};
+                                                                      for (var $139 in v4) {
+                                                                          if ({}.hasOwnProperty.call(v4, $139)) {
+                                                                              $138[$139] = v4[$139];
+                                                                          };
+                                                                      };
+                                                                      $138.overrideMarking = Data_Maybe.Nothing.value;
+                                                                      $138.msg = "Fired transition " + (Data_Show.show(dictShow1)(v.value0) + (" (" + (Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd1)(v.value0)(net$prime.transitionLabelsDict)) + ").")));
+                                                                      return $138;
+                                                                  })());
                                                               });
                                                           });
                                                       });
                                                   });
-                                              })(v1.netInfo.netApi.transition(v.value0));
+                                              });
                                           });
-                                      };
-                                      if (v instanceof View_Petrinet_Model.ToggleLabelVisibility) {
-                                          return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v1) {
-                                              return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
-                                                  if (v.value0 instanceof View_Petrinet_Model.Arc) {
-                                                      var $167 = {};
-                                                      for (var $168 in v1) {
-                                                          if ({}.hasOwnProperty.call(v1, $168)) {
-                                                              $167[$168] = v1[$168];
-                                                          };
-                                                      };
-                                                      $167.arcLabelsVisible = !v1.arcLabelsVisible;
-                                                      return $167;
-                                                  };
-                                                  if (v.value0 instanceof View_Petrinet_Model.Place) {
-                                                      var $170 = {};
-                                                      for (var $171 in v1) {
-                                                          if ({}.hasOwnProperty.call(v1, $171)) {
-                                                              $170[$171] = v1[$171];
-                                                          };
-                                                      };
-                                                      $170.placeLabelsVisible = !v1.placeLabelsVisible;
-                                                      return $170;
-                                                  };
-                                                  if (v.value0 instanceof View_Petrinet_Model.Transition) {
-                                                      var $173 = {};
-                                                      for (var $174 in v1) {
-                                                          if ({}.hasOwnProperty.call(v1, $174)) {
-                                                              $173[$174] = v1[$174];
-                                                          };
-                                                      };
-                                                      $173.transitionLabelsVisible = !v1.transitionLabelsVisible;
-                                                      return $173;
-                                                  };
-                                                  throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 238, column 17 - line 241, column 94): " + [ v.value0.constructor.name ]);
-                                              })());
-                                          });
-                                      };
-                                      throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 191, column 20 - line 241, column 94): " + [ v.constructor.name ]);
-                                  };
-                              };
-                          };
-                          var svgTokenAnimated = function (dictShow2) {
-                              return function (arc) {
-                                  var tokenFadeDuration = Data_Functor.mapFlipped(Svg_Attributes.functorDurationF)(View_Petrinet_Config.arcAnimationDuration)(function (v) {
-                                      return v / 4.0;
+                                      })(v1.netInfo.netApi.transition(v.value0));
                                   });
-                                  var animationId = tokenAnimatedClass(arc.htmlId);
-                                  return Svg_Elements.circleNode([ Svg_Attributes.class_("css-token-animated"), Svg_Attributes.cx(0.0), Svg_Attributes.cy(0.0), Svg_Attributes.r(0.0) ])([ Svg_Elements.animateMotion([ Svg_Attributes.id(animationId), Svg_Attributes.class_(arcAnimationClass(dictShow2)(arc.tid)(arc.isPost)), Svg_Attributes.begin("indefinite"), Svg_Attributes.dur(View_Petrinet_Config.arcAnimationDuration), Svg_Attributes.fillAnim(Svg_Attributes.Freeze.value) ])([ Svg_Elements.mpath([ Svg_Attributes.attr("href")("#" + arc.htmlId) ]) ]), Svg_Elements.animate([ Svg_Attributes.attributeName("opacity"), Svg_Attributes.from("0"), Svg_Attributes.to("1"), Svg_Attributes.begin("indefinite"), Svg_Attributes.dur(tokenFadeDuration), Svg_Attributes.fillAnim(Svg_Attributes.Freeze.value), Svg_Attributes.class_(arcAnimationClass(dictShow2)(arc.tid)(arc.isPost)) ]), Svg_Elements.animate([ Svg_Attributes.attributeName("r"), Svg_Attributes.from(Data_Show.show(Data_Show.showNumber)(0.0)), Svg_Attributes.to(Data_Show.show(Data_Show.showNumber)(2.0 * View_Petrinet_Config.tokenRadius)), Svg_Attributes.begin("indefinite"), Svg_Attributes.dur(tokenFadeDuration), Svg_Attributes.fillAnim(Svg_Attributes.Freeze.value), Svg_Attributes.class_(arcAnimationClass(dictShow2)(arc.tid)(arc.isPost)) ]) ]);
                               };
-                          };
-                          var svgArc = function (dictShow2) {
-                              return function (arc) {
-                                  return Svg_Elements.g([ Svg_Attributes.class_("css-arc-container") ])([ Svg_Elements.path([ Svg_Attributes.class_("css-arc " + (function () {
-                                      if (arc.isPost) {
-                                          return "css-post-arc";
-                                      };
-                                      return "css-pre-arc";
-                                  })()), Svg_Attributes.id(arc.htmlId), Svg_Attributes.d(svgPath(arc.src)(arc.dest)) ]), View_Petrinet_Arrow.svgArrow(arc.src)(arc.dest)(arc.isPost), Svg_Elements.text([ Svg_Attributes.class_("css-arc-name-label"), Svg_Attributes.attr("dy")("-0.3em"), Svg_Attributes.font_size(Svg_Attributes.FontSizeLength.create(new Svg_Attributes.Em(View_Petrinet_Config.fontSize))) ])([ Svg_Elements.element("textPath")([ Svg_Attributes.attr("href")("#" + arc.htmlId), Svg_Attributes.attr("startOffset")("50%") ])([ Halogen_HTML_Core.text(arc.label) ]) ]), svgTokenAnimated(dictShow2)(arc) ]);
-                              };
-                          };
-                          var svgTransitionAndArcs = function (dictShow2) {
-                              return function (t) {
-                                  var roleClasses = Data_Functor.map(Data_Functor.functorArray)(function (r) {
-                                      return "css-role-" + Data_Show.show(Data_Auth.showRole)(r);
-                                  })(Data_Set.toUnfoldable(Data_Unfoldable.unfoldableArray)(Data_Newtype.un(Data_Auth.newtypeRoles)(Data_Auth.Roles)(t.auths)));
-                                  return Svg_Elements.g([ Svg_Attributes.class_("css-transition" + (Data_Monoid.guard(Data_Monoid.monoidString)(t.isEnabled)(" enabled") + (" " + Data_Foldable.intercalate(Data_Foldable.foldableArray)(Data_Monoid.monoidString)(" ")(roleClasses)))), Svg_Attributes.id(t.htmlId), Halogen_HTML_Events.onClick(function (v) {
-                                      if (t.isEnabled) {
-                                          return Data_Maybe.Just.create(new View_Petrinet_Model.FireTransition(t.id));
-                                      };
-                                      return Data_Maybe.Nothing.value;
-                                  }) ])(Data_Semigroup.append(Data_Semigroup.semigroupArray)(Data_Functor.map(Data_Functor.functorArray)(svgArc(dictShow2))(Data_Semigroup.append(Data_Semigroup.semigroupArray)(t.preArcs)(t.postArcs)))(Data_Semigroup.append(Data_Semigroup.semigroupArray)([ svgTransitionRect(dictShow2)(t) ])([ svgTransitionLabel(dictShow2)(t) ])));
-                              };
-                          };
-                          var netToSVG = function (dictOrd2) {
-                              return function (dictShow2) {
-                                  return function (dictOrd3) {
-                                      return function (dictShow3) {
-                                          return function (v) {
-                                              return function (layout) {
-                                                  return function (focusedPlace) {
-                                                      return function (focusedTransition) {
-                                                          var svgTextBoxes = Data_Functor.map(Data_Functor.functorArray)(svgTextBox)(v.textBoxes);
-                                                          var svgDefs = [ Svg_Elements.defs([  ])([ View_Petrinet_Arrow.svgArrowheadMarker ]) ];
-                                                          var mkTransitionAndArcsModel = function (tid) {
-                                                              return function (tr) {
-                                                                  var arcLabel = function (v1) {
-                                                                      if (v1 === 1) {
-                                                                          return "";
-                                                                      };
-                                                                      return Data_Show.show(Data_Show.showInt)(v1);
-                                                                  };
-                                                                  var mkPostArc = function (dictShow4) {
-                                                                      return function (tid1) {
-                                                                          return function (src) {
-                                                                              return function (tp) {
-                                                                                  return Data_Functor.map(Data_Maybe.functorMaybe)(function (v1) {
-                                                                                      return {
-                                                                                          isPost: true,
-                                                                                          tid: tid1,
-                                                                                          src: src,
-                                                                                          dest: v1,
-                                                                                          label: arcLabel(tp.tokens),
-                                                                                          htmlId: postArcId(dictShow)(dictShow4)(tid1)(tp.place)
-                                                                                      };
-                                                                                  })(Data_Map_Internal.lookup(dictOrd)(tp.place)(layout.placePointsDict));
-                                                                              };
-                                                                          };
-                                                                      };
-                                                                  };
-                                                                  var mkPreArc = function (dictShow4) {
-                                                                      return function (tid1) {
-                                                                          return function (dest) {
-                                                                              return function (tp) {
-                                                                                  return Data_Functor.map(Data_Maybe.functorMaybe)(function (v1) {
-                                                                                      return {
-                                                                                          isPost: false,
-                                                                                          tid: tid1,
-                                                                                          src: v1,
-                                                                                          dest: dest,
-                                                                                          label: arcLabel(tp.tokens),
-                                                                                          htmlId: preArcId(dictShow)(dictShow4)(tid1)(tp.place)
-                                                                                      };
-                                                                                  })(Data_Map_Internal.lookup(dictOrd)(tp.place)(layout.placePointsDict));
-                                                                              };
-                                                                          };
-                                                                      };
-                                                                  };
-                                                                  return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Map_Internal.lookup(dictOrd3)(tid)(layout.transitionPointsDict))(function (v1) {
-                                                                      return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Traversable.traverse(Data_Traversable.traversableArray)(Data_Maybe.applicativeMaybe)(mkPreArc(dictShow3)(tid)(v1))(tr.pre))(function (v2) {
-                                                                          return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Traversable.traverse(Data_Traversable.traversableArray)(Data_Maybe.applicativeMaybe)(mkPostArc(dictShow3)(tid)(v1))(tr.post))(function (v3) {
-                                                                              var auths = Data_Maybe.fromMaybe(Data_Monoid.mempty(Data_Set.monoidSet(Data_Auth.ordRole)))(Data_Map_Internal.lookup(dictOrd3)(tid)(v.net.transitionAuthsDict));
-                                                                              return Control_Applicative.pure(Data_Maybe.applicativeMaybe)({
-                                                                                  id: tid,
-                                                                                  label: Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd3)(tid)(v.net.transitionLabelsDict)),
-                                                                                  isEnabled: Data_Petrinet_Representation_Dict.isTransitionEnabled(Data_Ord.ordInt)(dictOrd)(v.net.marking)(tr),
-                                                                                  preArcs: v2,
-                                                                                  postArcs: v3,
-                                                                                  auths: auths,
-                                                                                  htmlId: mkTransitionIdStr(dictShow3)(tid),
-                                                                                  point: v1,
-                                                                                  isFocused: Data_Eq.eq(Data_Maybe.eqMaybe(dictOrd3.Eq0()))(focusedTransition)(new Data_Maybe.Just(tid))
-                                                                              });
-                                                                          });
-                                                                      });
-                                                                  });
-                                                              };
-                                                          };
-                                                          var svgTransitions = Data_Array.catMaybes(Data_Functor.map(Data_Functor.functorArray)((function () {
-                                                              var $203 = Data_Functor.map(Data_Maybe.functorMaybe)(svgTransitionAndArcs(dictShow3));
-                                                              var $204 = Data_Tuple.uncurry(mkTransitionAndArcsModel);
-                                                              return function ($205) {
-                                                                  return $203($204($205));
-                                                              };
-                                                          })())(Data_Map_Internal.toUnfoldable(Data_Unfoldable.unfoldableArray)(v.net.transitionsDict)));
-                                                          var mkPlaceModel = function (id) {
-                                                              return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Map_Internal.lookup(dictOrd)(id)(v.net.placeLabelsDict))(function (v1) {
-                                                                  return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Map_Internal.lookup(dictOrd)(id)(layout.placePointsDict))(function (v2) {
-                                                                      var tokens = Data_Petrinet_Representation_Marking.findTokens(dictOrd)(Data_Monoid_Additive.monoidAdditive(Data_Semiring.semiringInt))(v.net.marking)(id);
-                                                                      return Control_Applicative.pure(Data_Maybe.applicativeMaybe)({
-                                                                          id: id,
-                                                                          tokens: tokens,
-                                                                          label: v1,
-                                                                          point: v2,
-                                                                          isFocused: Data_Foldable.elem(Data_Foldable.foldableMaybe)(dictOrd.Eq0())(id)(focusedPlace)
-                                                                      });
-                                                                  });
-                                                              });
-                                                          };
-                                                          var svgPlaces = Data_Array.catMaybes(Data_Functor.map(Data_Functor.functorArray)((function () {
-                                                              var $206 = Data_Functor.map(Data_Maybe.functorMaybe)(svgPlace(dictShow));
-                                                              return function ($207) {
-                                                                  return $206(mkPlaceModel($207));
-                                                              };
-                                                          })())(v.net.places));
-                                                          return Data_Semigroup.append(Data_Semigroup.semigroupArray)(svgDefs)(Data_Semigroup.append(Data_Semigroup.semigroupArray)(svgTextBoxes)(Data_Semigroup.append(Data_Semigroup.semigroupArray)(svgTransitions)(svgPlaces)));
-                                                      };
+                              if (v instanceof View_Petrinet_Model.ToggleLabelVisibility) {
+                                  return Control_Bind.bind(Halogen_Query_HalogenM.bindHalogenM)(Control_Monad_State_Class.get(Halogen_Query_HalogenM.monadStateHalogenM))(function (v1) {
+                                      return Control_Monad_State_Class.put(Halogen_Query_HalogenM.monadStateHalogenM)((function () {
+                                          if (v.value0 instanceof View_Petrinet_Model.Arc) {
+                                              var $144 = {};
+                                              for (var $145 in v1) {
+                                                  if ({}.hasOwnProperty.call(v1, $145)) {
+                                                      $144[$145] = v1[$145];
                                                   };
                                               };
+                                              $144.arcLabelsVisible = !v1.arcLabelsVisible;
+                                              return $144;
                                           };
+                                          if (v.value0 instanceof View_Petrinet_Model.Place) {
+                                              var $147 = {};
+                                              for (var $148 in v1) {
+                                                  if ({}.hasOwnProperty.call(v1, $148)) {
+                                                      $147[$148] = v1[$148];
+                                                  };
+                                              };
+                                              $147.placeLabelsVisible = !v1.placeLabelsVisible;
+                                              return $147;
+                                          };
+                                          if (v.value0 instanceof View_Petrinet_Model.Transition) {
+                                              var $150 = {};
+                                              for (var $151 in v1) {
+                                                  if ({}.hasOwnProperty.call(v1, $151)) {
+                                                      $150[$151] = v1[$151];
+                                                  };
+                                              };
+                                              $150.transitionLabelsVisible = !v1.transitionLabelsVisible;
+                                              return $150;
+                                          };
+                                          throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 237, column 17 - line 240, column 94): " + [ v.value0.constructor.name ]);
+                                      })());
+                                  });
+                              };
+                              throw new Error("Failed pattern match at View.Petrinet.PetrinetEditor (line 190, column 20 - line 240, column 94): " + [ v.constructor.name ]);
+                          };
+                          var svgTokenAnimated = function (arc) {
+                              var tokenFadeDuration = Data_Functor.mapFlipped(Svg_Attributes.functorDurationF)(View_Petrinet_Config.arcAnimationDuration)(function (v) {
+                                  return v / 4.0;
+                              });
+                              var animationId = tokenAnimatedClass(arc.htmlId);
+                              return Svg_Elements.circleNode([ Svg_Attributes.class_("css-token-animated"), Svg_Attributes.cx(0.0), Svg_Attributes.cy(0.0), Svg_Attributes.r(0.0) ])([ Svg_Elements.animateMotion([ Svg_Attributes.id(animationId), Svg_Attributes.class_(arcAnimationClass(arc.tid)(arc.isPost)), Svg_Attributes.begin("indefinite"), Svg_Attributes.dur(View_Petrinet_Config.arcAnimationDuration), Svg_Attributes.fillAnim(Svg_Attributes.Freeze.value) ])([ Svg_Elements.mpath([ Svg_Attributes.attr("href")("#" + arc.htmlId) ]) ]), Svg_Elements.animate([ Svg_Attributes.attributeName("opacity"), Svg_Attributes.from("0"), Svg_Attributes.to("1"), Svg_Attributes.begin("indefinite"), Svg_Attributes.dur(tokenFadeDuration), Svg_Attributes.fillAnim(Svg_Attributes.Freeze.value), Svg_Attributes.class_(arcAnimationClass(arc.tid)(arc.isPost)) ]), Svg_Elements.animate([ Svg_Attributes.attributeName("r"), Svg_Attributes.from(Data_Show.show(Data_Show.showNumber)(0.0)), Svg_Attributes.to(Data_Show.show(Data_Show.showNumber)(2.0 * View_Petrinet_Config.tokenRadius)), Svg_Attributes.begin("indefinite"), Svg_Attributes.dur(tokenFadeDuration), Svg_Attributes.fillAnim(Svg_Attributes.Freeze.value), Svg_Attributes.class_(arcAnimationClass(arc.tid)(arc.isPost)) ]) ]);
+                          };
+                          var svgArc = function (arc) {
+                              return Svg_Elements.g([ Svg_Attributes.class_("css-arc-container") ])([ Svg_Elements.path([ Svg_Attributes.class_("css-arc " + (function () {
+                                  if (arc.isPost) {
+                                      return "css-post-arc";
+                                  };
+                                  return "css-pre-arc";
+                              })()), Svg_Attributes.id(arc.htmlId), Svg_Attributes.d(svgPath(arc.src)(arc.dest)) ]), View_Petrinet_Arrow.svgArrow(arc.src)(arc.dest)(arc.isPost), Svg_Elements.text([ Svg_Attributes.class_("css-arc-name-label"), Svg_Attributes.attr("dy")("-0.3em"), Svg_Attributes.font_size(Svg_Attributes.FontSizeLength.create(new Svg_Attributes.Em(View_Petrinet_Config.fontSize))) ])([ Svg_Elements.element("textPath")([ Svg_Attributes.attr("href")("#" + arc.htmlId), Svg_Attributes.attr("startOffset")("50%") ])([ Halogen_HTML_Core.text(arc.label) ]) ]), svgTokenAnimated(arc) ]);
+                          };
+                          var svgTransitionAndArcs = function (t) {
+                              var roleClasses = Data_Functor.map(Data_Functor.functorArray)(function (r) {
+                                  return "css-role-" + Data_Show.show(Data_Auth.showRole)(r);
+                              })(Data_Set.toUnfoldable(Data_Unfoldable.unfoldableArray)(Data_Newtype.un(Data_Auth.newtypeRoles)(Data_Auth.Roles)(t.auths)));
+                              return Svg_Elements.g([ Svg_Attributes.class_("css-transition" + (Data_Monoid.guard(Data_Monoid.monoidString)(t.isEnabled)(" enabled") + (" " + Data_Foldable.intercalate(Data_Foldable.foldableArray)(Data_Monoid.monoidString)(" ")(roleClasses)))), Svg_Attributes.id(t.htmlId), Halogen_HTML_Events.onClick(function (v) {
+                                  if (t.isEnabled) {
+                                      return Data_Maybe.Just.create(new View_Petrinet_Model.FireTransition(t.id));
+                                  };
+                                  return Data_Maybe.Nothing.value;
+                              }) ])(Data_Semigroup.append(Data_Semigroup.semigroupArray)(Data_Functor.map(Data_Functor.functorArray)(svgArc)(Data_Semigroup.append(Data_Semigroup.semigroupArray)(t.preArcs)(t.postArcs)))(Data_Semigroup.append(Data_Semigroup.semigroupArray)([ svgTransitionRect(t) ])([ svgTransitionLabel(t) ])));
+                          };
+                          var netToSVG = function (v) {
+                              return function (layout) {
+                                  return function (focusedPlace) {
+                                      return function (focusedTransition) {
+                                          var svgTextBoxes = Data_Functor.map(Data_Functor.functorArray)(svgTextBox)(v.textBoxes);
+                                          var svgDefs = [ Svg_Elements.defs([  ])([ View_Petrinet_Arrow.svgArrowheadMarker ]) ];
+                                          var mkTransitionAndArcsModel = function (tid) {
+                                              return function (tr) {
+                                                  var arcLabel = function (v1) {
+                                                      if (v1 === 1) {
+                                                          return "";
+                                                      };
+                                                      return Data_Show.show(Data_Show.showInt)(v1);
+                                                  };
+                                                  var mkPostArc = function (src) {
+                                                      return function (tp) {
+                                                          return Data_Functor.map(Data_Maybe.functorMaybe)(function (v1) {
+                                                              return {
+                                                                  isPost: true,
+                                                                  tid: tid,
+                                                                  src: src,
+                                                                  dest: v1,
+                                                                  label: arcLabel(tp.tokens),
+                                                                  htmlId: postArcId(tid)(tp.place)
+                                                              };
+                                                          })(Data_Map_Internal.lookup(dictOrd)(tp.place)(layout.placePointsDict));
+                                                      };
+                                                  };
+                                                  var mkPreArc = function (dest) {
+                                                      return function (tp) {
+                                                          return Data_Functor.map(Data_Maybe.functorMaybe)(function (v1) {
+                                                              return {
+                                                                  isPost: false,
+                                                                  tid: tid,
+                                                                  src: v1,
+                                                                  dest: dest,
+                                                                  label: arcLabel(tp.tokens),
+                                                                  htmlId: preArcId(tid)(tp.place)
+                                                              };
+                                                          })(Data_Map_Internal.lookup(dictOrd)(tp.place)(layout.placePointsDict));
+                                                      };
+                                                  };
+                                                  return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Map_Internal.lookup(dictOrd1)(tid)(layout.transitionPointsDict))(function (v1) {
+                                                      return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Traversable.traverse(Data_Traversable.traversableArray)(Data_Maybe.applicativeMaybe)(mkPreArc(v1))(tr.pre))(function (v2) {
+                                                          return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Traversable.traverse(Data_Traversable.traversableArray)(Data_Maybe.applicativeMaybe)(mkPostArc(v1))(tr.post))(function (v3) {
+                                                              var auths = Data_Maybe.fromMaybe(Data_Monoid.mempty(Data_Set.monoidSet(Data_Auth.ordRole)))(Data_Map_Internal.lookup(dictOrd1)(tid)(v.net.transitionAuthsDict));
+                                                              return Control_Applicative.pure(Data_Maybe.applicativeMaybe)({
+                                                                  id: tid,
+                                                                  label: Data_Foldable.fold(Data_Foldable.foldableMaybe)(Data_Monoid.monoidString)(Data_Map_Internal.lookup(dictOrd1)(tid)(v.net.transitionLabelsDict)),
+                                                                  isEnabled: Data_Petrinet_Representation_Dict.isTransitionEnabled(Data_Ord.ordInt)(dictOrd)(v.net.marking)(tr),
+                                                                  preArcs: v2,
+                                                                  postArcs: v3,
+                                                                  auths: auths,
+                                                                  htmlId: mkTransitionIdStr(tid),
+                                                                  point: v1,
+                                                                  isFocused: Data_Eq.eq(Data_Maybe.eqMaybe(dictOrd1.Eq0()))(focusedTransition)(new Data_Maybe.Just(tid))
+                                                              });
+                                                          });
+                                                      });
+                                                  });
+                                              };
+                                          };
+                                          var svgTransitions = Data_Array.catMaybes(Data_Functor.map(Data_Functor.functorArray)((function () {
+                                              var $178 = Data_Functor.map(Data_Maybe.functorMaybe)(svgTransitionAndArcs);
+                                              var $179 = Data_Tuple.uncurry(mkTransitionAndArcsModel);
+                                              return function ($180) {
+                                                  return $178($179($180));
+                                              };
+                                          })())(Data_Map_Internal.toUnfoldable(Data_Unfoldable.unfoldableArray)(v.net.transitionsDict)));
+                                          var mkPlaceModel = function (id) {
+                                              return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Map_Internal.lookup(dictOrd)(id)(v.net.placeLabelsDict))(function (v1) {
+                                                  return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Map_Internal.lookup(dictOrd)(id)(layout.placePointsDict))(function (v2) {
+                                                      var tokens = Data_Petrinet_Representation_Marking.findTokens(dictOrd)(Data_Monoid_Additive.monoidAdditive(Data_Semiring.semiringInt))(v.net.marking)(id);
+                                                      return Control_Applicative.pure(Data_Maybe.applicativeMaybe)({
+                                                          id: id,
+                                                          tokens: tokens,
+                                                          label: v1,
+                                                          point: v2,
+                                                          isFocused: Data_Foldable.elem(Data_Foldable.foldableMaybe)(dictOrd.Eq0())(id)(focusedPlace)
+                                                      });
+                                                  });
+                                              });
+                                          };
+                                          var svgPlaces = Data_Array.catMaybes(Data_Functor.map(Data_Functor.functorArray)((function () {
+                                              var $181 = Data_Functor.map(Data_Maybe.functorMaybe)(svgPlace);
+                                              return function ($182) {
+                                                  return $181(mkPlaceModel($182));
+                                              };
+                                          })())(v.net.places));
+                                          return Data_Semigroup.append(Data_Semigroup.semigroupArray)(svgDefs)(Data_Semigroup.append(Data_Semigroup.semigroupArray)(svgTextBoxes)(Data_Semigroup.append(Data_Semigroup.semigroupArray)(svgTransitions)(svgPlaces)));
                                       };
                                   };
                               };
@@ -13169,15 +13113,15 @@ var PS = {};
                               var sceneSize = Data_Semiring.add(Data_Vec3_Vec3.semiringVec3(Data_Semiring.semiringNumber))(Data_Ring.sub(Data_Vec3_Vec3.ringVec3(Data_Ring.ringNumber)(Data_Vec3_Vec3.semiringVec3(Data_Semiring.semiringNumber)))(bounds.max)(bounds.min))(padding);
                               var sceneTopLeft = Data_Ring.sub(Data_Vec3_Vec3.ringVec3(Data_Ring.ringNumber)(Data_Vec3_Vec3.semiringVec3(Data_Semiring.semiringNumber)))(bounds.min)(Data_EuclideanRing.div(Data_Vec3_Vec3.euclideanRingVec3(Data_EuclideanRing.euclideanRingNumber))(padding)(Control_Applicative.pure(Data_Vec3_Vec3.applicativeVec3)(2.0)));
                               var arcLabelsVisibilityClass = Data_Monoid.guard(Data_Monoid.monoidString)(!state.arcLabelsVisible)("css-hide-arc-labels");
-                              return Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "flex" ]) ])([ Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "w-5/6" ]) ])([ Halogen_HTML_Elements.div([ Halogen_HTML_Properties.id_(componentHtmlId), Halogen_HTML_Properties.classes([ "petrinet-component", "css-petrinet-component", Halogen_HTML_Core.ClassName(arcLabelsVisibilityClass + (" " + (transitionLabelsVisibilityClass + (" " + placeLabelsVisibilityClass)))) ]) ])([ Svg_Elements.svg([ Svg_Attributes.viewBox(Data_Vec3_Vec3["_x"](sceneTopLeft))(Data_Vec3_Vec3["_y"](sceneTopLeft))(Data_Vec3_Vec3["_x"](sceneSize))(Data_Vec3_Vec3["_y"](sceneSize)) ])(netToSVG(dictOrd)(dictShow)(dictOrd1)(dictShow1)(netInfo)(layout)(state.focusedPlace)(state.focusedTransition)) ]), Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "w-1/6" ]) ])((function () {
+                              return Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "flex" ]) ])([ Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "w-5/6" ]) ])([ Halogen_HTML_Elements.div([ Halogen_HTML_Properties.id_(componentHtmlId), Halogen_HTML_Properties.classes([ "petrinet-component", "css-petrinet-component", Halogen_HTML_Core.ClassName(arcLabelsVisibilityClass + (" " + (transitionLabelsVisibilityClass + (" " + placeLabelsVisibilityClass)))) ]) ])([ Svg_Elements.svg([ Svg_Attributes.viewBox(Data_Vec3_Vec3["_x"](sceneTopLeft))(Data_Vec3_Vec3["_y"](sceneTopLeft))(Data_Vec3_Vec3["_x"](sceneSize))(Data_Vec3_Vec3["_y"](sceneSize)) ])(netToSVG(netInfo)(layout)(state.focusedPlace)(state.focusedTransition)) ]), Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "w-1/6" ]) ])((function () {
                                   if (disableMarkingsAndLabelVisibilityButtons) {
                                       return [  ];
                                   };
                                   return [ htmlMarking(dictShow)(Data_Show.showInt)(marking), labelVisibilityButtons ];
                               })()) ]), Halogen_HTML_Elements.div([ Halogen_HTML_Properties.classes([ "w-1/6", "px-2" ]) ])([ Data_Maybe.maybe(View_Common.emptyHtml)((function () {
-                                  var $208 = View_Common.mapAction(View_Petrinet_Model.UpdatePlace.create);
-                                  return function ($209) {
-                                      return $208(View_Petrinet_PlaceEditor["form'"]($209));
+                                  var $183 = View_Common.mapAction(View_Petrinet_Model.UpdatePlace.create);
+                                  return function ($184) {
+                                      return $183(View_Petrinet_PlaceEditor["form'"]($184));
                                   };
                               })())(Control_Bind.bind(Data_Maybe.bindMaybe)(state.focusedPlace)(function (v) {
                                   return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Map_Internal.lookup(dictOrd)(v)(state.netInfo.net.placeLabelsDict))(function (v1) {
@@ -13189,10 +13133,10 @@ var PS = {};
                                       });
                                   });
                               })), Data_Maybe.maybe(View_Common.emptyHtml)((function () {
-                                  var $210 = View_Common.mapAction(View_Petrinet_Model.UpdateTransition.create);
-                                  var $211 = View_Petrinet_TransitionEditor["form'"](state.netInfo.roleInfos);
-                                  return function ($212) {
-                                      return $210($211($212));
+                                  var $185 = View_Common.mapAction(View_Petrinet_Model.UpdateTransition.create);
+                                  var $186 = View_Petrinet_TransitionEditor["form'"](state.netInfo.roleInfos);
+                                  return function ($187) {
+                                      return $185($186($187));
                                   };
                               })())(Control_Bind.bind(Data_Maybe.bindMaybe)(state.focusedTransition)(function (v) {
                                   return Control_Bind.bind(Data_Maybe.bindMaybe)(Data_Map_Internal.lookup(dictOrd1)(v)(state.netInfo.net.transitionLabelsDict))(function (v1) {
@@ -13211,10 +13155,10 @@ var PS = {};
                           };
                           return Halogen_Component.mkComponent({
                               "eval": Halogen_Component.mkEval({
-                                  handleAction: handleAction(dictOrd1)(dictShow1),
+                                  handleAction: handleAction,
                                   handleQuery: Halogen_Component.defaultEval.handleQuery,
-                                  receive: function ($213) {
-                                      return Data_Maybe.Just.create(View_Petrinet_Model.LoadNet.create($213));
+                                  receive: function ($188) {
+                                      return Data_Maybe.Just.create(View_Petrinet_Model.LoadNet.create($188));
                                   },
                                   initialize: Halogen_Component.defaultEval.initialize,
                                   finalize: Halogen_Component.defaultEval.finalize
